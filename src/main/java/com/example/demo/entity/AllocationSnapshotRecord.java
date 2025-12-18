@@ -33,11 +33,7 @@ public class AllocationSnapshotRecord {
             snapshotDate = LocalDateTime.now();
         }
     }
-
-    // Constructors
     public AllocationSnapshotRecord() {}
-
-    // Getters and Setters
 
     public Long getId() {
         return id;
