@@ -38,8 +38,6 @@ public class InvestorProfile {
         }
     }
 
-    // Getters and Setters
-
     public Long getId() {
         return id;
     }

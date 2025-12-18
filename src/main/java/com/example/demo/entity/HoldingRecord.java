@@ -33,11 +33,7 @@ public class HoldingRecord {
             snapshotDate = LocalDateTime.now();
         }
     }
-
-    // Constructors
     public HoldingRecord() {}
-
-    // Getters and Setters
 
     public Long getId() {
         return id;

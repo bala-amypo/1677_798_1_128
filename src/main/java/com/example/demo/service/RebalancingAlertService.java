@@ -9,6 +9,4 @@ public class RebalancingAlertRecord {
     private boolean resolved;
     private LocalDateTime createdAt;
     private LocalDateTime resolvedAt;
-
-    // constructors, getters, setters
 }

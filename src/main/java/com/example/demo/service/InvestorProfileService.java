@@ -2,7 +2,7 @@ public interface InvestorProfileService {
 
     InvestorProfile createInvestor(InvestorProfile investor);
 
-    InvestorProfile getInvestorById(Long id);  // throws if not found
+    InvestorProfile getInvestorById(Long id); 
 
     InvestorProfile findByInvestorId(String investorId);
 

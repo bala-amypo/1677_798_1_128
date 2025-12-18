@@ -55,11 +55,7 @@ public class RebalancingAlertRecord {
             resolved = false;
         }
     }
-
-    // Constructors
     public RebalancingAlertRecord() {}
-
-    // Getters and Setters
 
     public Long getId() {
         return id;
