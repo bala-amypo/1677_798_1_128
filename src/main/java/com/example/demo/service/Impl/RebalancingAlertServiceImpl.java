@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.RebalancingAlert;
 import com.example.demo.repository.RebalancingAlertRepository;
 import com.example.demo.service.RebalancingAlertService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,13 +16,16 @@ public class RebalancingAlertServiceImpl implements RebalancingAlertService {
 
     private final RebalancingAlertRepository rebalancingAlertRepository;
 
+    @Autowired
     public RebalancingAlertServiceImpl(RebalancingAlertRepository rebalancingAlertRepository) {
         this.rebalancingAlertRepository = rebalancingAlertRepository;
     }
 
     @Override
     public RebalancingAlert createAlert(RebalancingAlert alert) {
-        alert.setAlertDate(LocalDate.now());
+        if (alert.getAlertDate() == null) {
+            alert.setAlertDate(LocalDate.now());
+        }
         alert.setResolved(false);
         return rebalancingAlertRepository.save(alert);
     }
@@ -55,14 +59,36 @@ public class RebalancingAlertServiceImpl implements RebalancingAlertService {
     public RebalancingAlert updateAlert(Long id, RebalancingAlert alert) {
         RebalancingAlert existing = getAlertById(id);
         if (existing != null) {
-            existing.setInvestorId(alert.getInvestorId());
-            existing.setAssetClass(alert.getAssetClass());
-            existing.setCurrentPercentage(alert.getCurrentPercentage());
-            existing.setTargetPercentage(alert.getTargetPercentage());
-            existing.setDeviation(alert.getDeviation());
-            existing.setMessage(alert.getMessage());
-            existing.setActionType(alert.getActionType());
-            existing.setRequiredActionAmount(alert.getRequiredActionAmount());
+            // Update all fields from the provided alert
+            if (alert.getInvestorId() != null) {
+                existing.setInvestorId(alert.getInvestorId());
+            }
+            if (alert.getAlertType() != null) {
+                existing.setAlertType(alert.getAlertType());
+            }
+            if (alert.getAssetClass() != null) {
+                existing.setAssetClass(alert.getAssetClass());
+            }
+            if (alert.getCurrentPercentage() != null) {
+                existing.setCurrentPercentage(alert.getCurrentPercentage());
+            }
+            if (alert.getTargetPercentage() != null) {
+                existing.setTargetPercentage(alert.getTargetPercentage());
+            }
+            if (alert.getDeviation() != null) {
+                existing.setDeviation(alert.getDeviation());
+            }
+            if (alert.getMessage() != null) {
+                existing.setMessage(alert.getMessage());
+            }
+            if (alert.getActionType() != null) {
+                existing.setActionType(alert.getActionType());
+            }
+            if (alert.getRequiredActionAmount() != null) {
+                existing.setRequiredActionAmount(alert.getRequiredActionAmount());
+            }
+            existing.setResolved(alert.isResolved());
+            
             return rebalancingAlertRepository.save(existing);
         }
         return null;
@@ -73,7 +99,6 @@ public class RebalancingAlertServiceImpl implements RebalancingAlertService {
         RebalancingAlert alert = getAlertById(id);
         if (alert != null) {
             alert.setResolved(true);
-            alert.setResolvedDate(LocalDate.now());
             return rebalancingAlertRepository.save(alert);
         }
         return null;
