@@ -5,7 +5,6 @@ import com.example.demo.repository.HoldingRecordRepository;
 import com.example.demo.service.HoldingRecordService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -40,17 +39,9 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
     
     @Override
     public HoldingRecord updateHolding(Long id, HoldingRecord holding) {
-        HoldingRecord existing = getHoldingById(id);
-        if (existing != null) {
-            // Update fields as needed
-            existing.setInvestorId(holding.getInvestorId());
-            existing.setAssetName(holding.getAssetName());
-            existing.setQuantity(holding.getQuantity());
-            existing.setPricePerUnit(holding.getPricePerUnit());
-            existing.setRecordDate(holding.getRecordDate());
-            return holdingRecordRepository.save(existing);
-        }
-        return null;
+        // Simplified: Just save the new holding with the given ID
+        holding.setId(id);
+        return holdingRecordRepository.save(holding);
     }
     
     @Override
