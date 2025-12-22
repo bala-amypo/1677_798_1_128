@@ -9,9 +9,15 @@ public interface HoldingRecordService {
     HoldingRecord recordHolding(HoldingRecord holding);
 
     List<HoldingRecord> getHoldingsByInvestor(Long investorId);
-    List<HoldingRecord> findByInvestorId(Long investorId);
+    
+    // Remove duplicate: List<HoldingRecord> findByInvestorId(Long investorId);
 
     HoldingRecord getHoldingById(Long id);
 
     List<HoldingRecord> getAllHoldings();
+    
+    // Optional: Add update and delete methods
+    HoldingRecord updateHolding(Long id, HoldingRecord holding);
+    
+    void deleteHolding(Long id);
 }
