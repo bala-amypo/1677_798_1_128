@@ -2,10 +2,9 @@ package com.example.demo.entity;
 
 import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
-public class HoldingRecord {
+public class AssetClassAllocationRule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,9 +15,9 @@ public class HoldingRecord {
     @Enumerated(EnumType.STRING)
     private AssetClassType assetClass;
 
-    private Double currentValue;
+    private Double targetPercentage;
 
-    private LocalDateTime snapshotDate;
+    private boolean active;
 
     public Long getId() {
         return id;
@@ -44,19 +43,19 @@ public class HoldingRecord {
         this.assetClass = assetClass;
     }
 
-    public Double getCurrentValue() {
-        return currentValue;
+    public Double getTargetPercentage() {
+        return targetPercentage;
     }
 
-    public void setCurrentValue(Double currentValue) {
-        this.currentValue = currentValue;
+    public void setTargetPercentage(Double targetPercentage) {
+        this.targetPercentage = targetPercentage;
     }
 
-    public LocalDateTime getSnapshotDate() {
-        return snapshotDate;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setSnapshotDate(LocalDateTime snapshotDate) {
-        this.snapshotDate = snapshotDate;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

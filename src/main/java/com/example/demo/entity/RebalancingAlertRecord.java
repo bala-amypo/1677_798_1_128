@@ -1,64 +1,41 @@
+package com.example.demo.entity;
+
+import com.example.demo.entity.enums.AlertSeverity;
+import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "rebalancing_alert_record")
 public class RebalancingAlertRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private Long investorId;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private AssetClassType assetClass;
 
-    @DecimalMin(value = "0.0")
-    @Column(nullable = false)
     private Double currentPercentage;
 
-    @DecimalMin(value = "0.0")
-    @Column(nullable = false)
     private Double targetPercentage;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private AlertSeverity severity;
 
-    @Column(nullable = false)
     private String message;
 
-    @Column(nullable = false)
     private LocalDateTime alertDate;
 
-    @Column(nullable = false)
-    private Boolean resolved = false;
-
-    @PrePersist
-    protected void onCreate() {
-        if (currentPercentage == null || targetPercentage == null) {
-            throw new IllegalArgumentException("Percentages cannot be null");
-        }
-        if (currentPercentage <= targetPercentage) {
-            throw new IllegalArgumentException(
-                "Alert generated only when currentPercentage > targetPercentage"
-            );
-        }
-        if (alertDate == null) {
-            alertDate = LocalDateTime.now();
-        }
-        if (resolved == null) {
-            resolved = false;
-        }
-    }
-    public RebalancingAlertRecord() {}
+    private boolean resolved;
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getInvestorId() {
@@ -117,11 +94,11 @@ public class RebalancingAlertRecord {
         this.alertDate = alertDate;
     }
 
-    public Boolean getResolved() {
+    public boolean isResolved() {
         return resolved;
     }
 
-    public void setResolved(Boolean resolved) {
+    public void setResolved(boolean resolved) {
         this.resolved = resolved;
     }
 }
