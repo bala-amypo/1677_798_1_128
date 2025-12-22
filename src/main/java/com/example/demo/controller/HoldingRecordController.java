@@ -1,5 +1,10 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.HoldingRecord;
+import com.example.demo.service.HoldingRecordService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -13,26 +18,23 @@ public class HoldingRecordController {
     }
 
     @PostMapping
-    public ResponseEntity<HoldingRecordDto> recordHolding(@RequestBody HoldingRecordDto request) {
-        HoldingRecordDto saved = holdingRecordService.recordHolding(request);
-        return ResponseEntity.ok(saved);
+    public ResponseEntity<HoldingRecord> recordHolding(@RequestBody HoldingRecord holding) {
+        return ResponseEntity.ok(holdingRecordService.recordHolding(holding));
     }
 
     @GetMapping("/investor/{investorId}")
-    public ResponseEntity<List<HoldingRecordDto>> getHoldingsByInvestor(@PathVariable Long investorId) {
-        List<HoldingRecordDto> holdings = holdingRecordService.getHoldingsByInvestor(investorId);
-        return ResponseEntity.ok(holdings);
+    public ResponseEntity<List<HoldingRecord>> getHoldingsByInvestor(
+            @PathVariable Long investorId) {
+        return ResponseEntity.ok(holdingRecordService.getHoldingsByInvestor(investorId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HoldingRecordDto> getHolding(@PathVariable Long id) {
-        HoldingRecordDto holding = holdingRecordService.getHolding(id);
-        return ResponseEntity.ok(holding);
+    public ResponseEntity<HoldingRecord> getHoldingById(@PathVariable Long id) {
+        return ResponseEntity.ok(holdingRecordService.getHoldingById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<HoldingRecordDto>> listAll() {
-        List<HoldingRecordDto> holdings = holdingRecordService.getAllHoldings();
-        return ResponseEntity.ok(holdings);
+    public ResponseEntity<List<HoldingRecord>> getAllHoldings() {
+        return ResponseEntity.ok(holdingRecordService.getAllHoldings());
     }
 }

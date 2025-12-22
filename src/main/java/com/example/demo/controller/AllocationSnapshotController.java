@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.AllocationSnapshotDto;
+import com.example.demo.entity.AllocationSnapshotRecord;
 import com.example.demo.service.AllocationSnapshotService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,22 +18,24 @@ public class AllocationSnapshotController {
     }
 
     @PostMapping("/compute/{investorId}")
-    public ResponseEntity<AllocationSnapshotDto> computeSnapshot(@PathVariable Long investorId) {
+    public ResponseEntity<AllocationSnapshotRecord> computeSnapshot(
+            @PathVariable Long investorId) {
         return ResponseEntity.ok(allocationSnapshotService.computeSnapshot(investorId));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AllocationSnapshotDto> getSnapshot(@PathVariable Long id) {
+    public ResponseEntity<AllocationSnapshotRecord> getSnapshotById(@PathVariable Long id) {
         return ResponseEntity.ok(allocationSnapshotService.getSnapshotById(id));
     }
 
     @GetMapping("/investor/{investorId}")
-    public ResponseEntity<List<AllocationSnapshotDto>> getSnapshotsByInvestor(@PathVariable Long investorId) {
+    public ResponseEntity<List<AllocationSnapshotRecord>> getSnapshotsByInvestor(
+            @PathVariable Long investorId) {
         return ResponseEntity.ok(allocationSnapshotService.getSnapshotsByInvestor(investorId));
     }
 
     @GetMapping
-    public ResponseEntity<List<AllocationSnapshotDto>> getAllSnapshots() {
+    public ResponseEntity<List<AllocationSnapshotRecord>> getAllSnapshots() {
         return ResponseEntity.ok(allocationSnapshotService.getAllSnapshots());
     }
 }

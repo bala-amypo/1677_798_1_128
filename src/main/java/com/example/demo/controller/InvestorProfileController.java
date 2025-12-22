@@ -1,11 +1,10 @@
-package com.example.investor.api;
+package com.example.demo.controller;
 
-import com.example.investor.model.InvestorProfile;
-import com.example.investor.service.InvestorProfileService;
+import com.example.demo.entity.InvestorProfile;
+import com.example.demo.service.InvestorProfileService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,17 +18,14 @@ public class InvestorProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<InvestorProfile> createInvestor(@RequestBody InvestorProfile investor) {
-        InvestorProfile created = investorProfileService.createInvestor(investor);
-        return ResponseEntity
-                .created(URI.create("/api/investors/" + created.getId()))
-                .body(created);
+    public ResponseEntity<InvestorProfile> createInvestor(
+            @RequestBody InvestorProfile investor) {
+        return ResponseEntity.ok(investorProfileService.createInvestor(investor));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<InvestorProfile> getInvestorById(@PathVariable Long id) {
-        InvestorProfile investor = investorProfileService.getInvestorById(id);
-        return ResponseEntity.ok(investor);
+        return ResponseEntity.ok(investorProfileService.getInvestorById(id));
     }
 
     @GetMapping
@@ -40,17 +36,13 @@ public class InvestorProfileController {
     @PutMapping("/{id}/status")
     public ResponseEntity<InvestorProfile> updateInvestorStatus(
             @PathVariable Long id,
-            @RequestParam("active") boolean active) {
-        InvestorProfile updated = investorProfileService.updateInvestorStatus(id, active);
-        return ResponseEntity.ok(updated);
+            @RequestParam boolean active) {
+        return ResponseEntity.ok(investorProfileService.updateInvestorStatus(id, active));
     }
 
     @GetMapping("/lookup/{investorId}")
-    public ResponseEntity<InvestorProfile> findByInvestorId(@PathVariable String investorId) {
-        InvestorProfile investor = investorProfileService.findByInvestorId(investorId);
-        if (investor == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(investor);
+    public ResponseEntity<InvestorProfile> lookupByInvestorId(
+            @PathVariable String investorId) {
+        return ResponseEntity.ok(investorProfileService.findByInvestorId(investorId));
     }
 }
