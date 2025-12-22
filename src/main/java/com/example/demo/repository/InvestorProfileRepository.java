@@ -9,4 +9,5 @@ public interface InvestorProfileRepository extends JpaRepository<InvestorProfile
 
     // exact name required by the spec
     Optional<InvestorProfile> findByInvestorId(String investorId);
+    boolean existsByUserId(Long userId);
 }
