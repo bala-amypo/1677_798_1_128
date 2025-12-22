@@ -16,7 +16,6 @@
 	
 	<properties>
 		<java.version>17</java.version>
-		<!-- Add skipTests to avoid test issues -->
 		<skipTests>true</skipTests>
 	</properties>
 	
@@ -37,11 +36,11 @@
 			<artifactId>mysql-connector-j</artifactId>
 		</dependency>
 		
-		<!-- Optional: Add H2 for backup testing -->
+		<!-- ✅ ADD THIS: Swagger/OpenAPI Dependency -->
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.3.0</version>
 		</dependency>
 		
 		<dependency>
