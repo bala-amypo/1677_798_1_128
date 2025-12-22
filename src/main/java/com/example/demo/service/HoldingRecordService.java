@@ -1,40 +1,17 @@
-package com.example.demo.service.impl;
+package com.example.demo.service;
 
 import com.example.demo.entity.HoldingRecord;
-import com.example.demo.repository.HoldingRecordRepository;
-import com.example.demo.service.HoldingRecordService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Service
-@Transactional
-public class HoldingRecordServiceImpl implements HoldingRecordService {
+public interface HoldingRecordService {
 
-    private final HoldingRecordRepository holdingRecordRepository;
+    HoldingRecord recordHolding(HoldingRecord holding);
 
-    public HoldingRecordServiceImpl(HoldingRecordRepository holdingRecordRepository) {
-        this.holdingRecordRepository = holdingRecordRepository;
-    }
+    List<HoldingRecord> getHoldingsByInvestor(Long investorId);
+    List<HoldingRecord> findByInvestorId(Long investorId);
 
-    @Override
-    public HoldingRecord recordHolding(HoldingRecord holding) {
-        return holdingRecordRepository.save(holding);
-    }
+    HoldingRecord getHoldingById(Long id);
 
-    @Override
-    public List<HoldingRecord> getHoldingsByInvestor(Long investorId) {
-        return holdingRecordRepository.findByInvestorId(investorId);
-    }
-
-    @Override
-    public HoldingRecord getHoldingById(Long id) {
-        return holdingRecordRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<HoldingRecord> getAllHoldings() {
-        return holdingRecordRepository.findAll();
-    }
+    List<HoldingRecord> getAllHoldings();
 }
