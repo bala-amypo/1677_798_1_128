@@ -4,11 +4,13 @@ import com.example.demo.entity.AllocationSnapshot;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface AllocationSnapshotRepository extends JpaRepository<AllocationSnapshot, Long> {
-    List<AllocationSnapshot> findByInvestorId(Long investorId);
-    List<AllocationSnapshot> findByInvestorIdAndSnapshotDateBetween(Long investorId, LocalDate startDate, LocalDate endDate);
+    List<AllocationSnapshot> findByInvestorProfileId(Long investorProfileId);
+    List<AllocationSnapshot> findByUserId(Long userId);
+    List<AllocationSnapshot> findBySnapshotTimestampBetween(LocalDateTime start, LocalDateTime end);
+    List<AllocationSnapshot> findByInvestorProfileIdAndSnapshotTimestampBetween(Long investorProfileId, LocalDateTime start, LocalDateTime end);
 }

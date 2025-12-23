@@ -1,26 +1,13 @@
-package com.example.demo.service;
+package com.example.demo.Impl;
 
 import com.example.demo.entity.InvestorProfile;
-import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 
-public interface InvestorProfileService {
-    InvestorProfile createProfile(Long userId, String riskTolerance, 
-                                 String investmentHorizon, BigDecimal initialInvestment);
-    
-    Optional<InvestorProfile> getProfileByUserId(Long userId);
-    
-    InvestorProfile updateProfile(Long userId, String riskTolerance, 
-                                 String investmentHorizon, BigDecimal currentInvestment);
-    
-    void updateInvestorStatus(Long userId, boolean isActive);
-    
-    void updateCurrentInvestment(Long userId, BigDecimal currentInvestment);
-    
-    List<InvestorProfile> getAllActiveProfiles();
-    
-    boolean existsByUserId(Long userId);
-    
-    void deleteProfile(Long userId);
+public interface InvestorProfilesService {
+    InvestorProfile createInvestorProfile(String name, String investorId, Long userId);
+    InvestorProfile getInvestorProfileById(Long id);
+    InvestorProfile getInvestorProfileByInvestorId(String investorId);
+    List<InvestorProfile> getAllInvestorProfiles();
+    InvestorProfile updateInvestorProfile(Long id, String name);
+    void deleteInvestorProfile(Long id);
 }
