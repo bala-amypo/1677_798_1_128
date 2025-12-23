@@ -1,12 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.entity.AllocationSnapshotRecord;
 import com.example.demo.service.AllocationSnapshotService;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/snapshots")
+@RequestMapping("/allocation")
 public class AllocationSnapshotController {
 
     private final AllocationSnapshotService service;
@@ -15,23 +15,8 @@ public class AllocationSnapshotController {
         this.service = service;
     }
 
-    @PostMapping("/compute/{investorId}")
-    public AllocationSnapshotRecord compute(@PathVariable Long investorId) {
-        return service.computeSnapshot(investorId);
-    }
-
-    @GetMapping("/investor/{investorId}")
-    public List<AllocationSnapshotRecord> byInvestor(@PathVariable Long investorId) {
-        return service.getSnapshotsByInvestor(investorId);
-    }
-
-    @GetMapping("/{id}")
-    public AllocationSnapshotRecord get(@PathVariable Long id) {
-        return service.getSnapshotById(id);
-    }
-
-    @GetMapping
-    public List<AllocationSnapshotRecord> all() {
-        return service.getAllSnapshots();
+    @GetMapping("/{investorId}")
+    public Map<String, Double> getAllocation(@PathVariable Long investorId) {
+        return service.calculateAllocation(investorId);
     }
 }
