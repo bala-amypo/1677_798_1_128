@@ -3,6 +3,8 @@ package com.example.demo.entity;
 import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "holding_records")
 public class HoldingRecord {
@@ -16,31 +18,56 @@ public class HoldingRecord {
     @Enumerated(EnumType.STRING)
     private AssetClassType assetClass;
 
-    private double currentValue;
+    private Double currentValue;
 
-    // ===== Validation =====
-    public void validate() {
-        if (investorId == null) {
-            throw new IllegalArgumentException("Investor ID is required");
-        }
-        if (assetClass == null) {
-            throw new IllegalArgumentException("Asset class is required");
-        }
-        if (currentValue < 0) {
-            throw new IllegalArgumentException("Current value cannot be negative");
-        }
+    private LocalDateTime snapshotDate;
+
+    // ===== GETTERS / SETTERS =====
+
+    public Long getId() {
+        return id;
     }
 
-    // ===== Getters & Setters =====
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Long getInvestorId() { return investorId; }
-    public void setInvestorId(Long investorId) { this.investorId = investorId; }
+    public Long getInvestorId() {
+        return investorId;
+    }
 
-    public AssetClassType getAssetClass() { return assetClass; }
-    public void setAssetClass(AssetClassType assetClass) { this.assetClass = assetClass; }
+    public void setInvestorId(Long investorId) {
+        this.investorId = investorId;
+    }
 
-    public double getCurrentValue() { return currentValue; }
-    public void setCurrentValue(double currentValue) { this.currentValue = currentValue; }
+    public AssetClassType getAssetClass() {
+        return assetClass;
+    }
+
+    public void setAssetClass(AssetClassType assetClass) {
+        this.assetClass = assetClass;
+    }
+
+    public Double getCurrentValue() {
+        return currentValue;
+    }
+
+    public void setCurrentValue(Double currentValue) {
+        this.currentValue = currentValue;
+    }
+
+    public LocalDateTime getSnapshotDate() {
+        return snapshotDate;
+    }
+
+    public void setSnapshotDate(LocalDateTime snapshotDate) {
+        this.snapshotDate = snapshotDate;
+    }
+
+    // ===== VALIDATION =====
+    public void validate() {
+        if (currentValue == null || currentValue <= 0) {
+            throw new IllegalArgumentException("must be > 0");
+        }
+    }
 }

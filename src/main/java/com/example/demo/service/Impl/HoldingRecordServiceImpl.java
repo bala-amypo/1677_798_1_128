@@ -4,32 +4,33 @@ import com.example.demo.entity.HoldingRecord;
 import com.example.demo.repository.HoldingRecordRepository;
 import com.example.demo.service.HoldingRecordService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
+@Transactional
 public class HoldingRecordServiceImpl implements HoldingRecordService {
 
-    private final HoldingRecordRepository repo;
+    private final HoldingRecordRepository repository;
 
-    public HoldingRecordServiceImpl(HoldingRecordRepository repo) {
-        this.repo = repo;
+    public HoldingRecordServiceImpl(HoldingRecordRepository repository) {
+        this.repository = repository;
     }
 
-    public HoldingRecord recordHolding(HoldingRecord holding) {
+    @Override
+    public HoldingRecord save(HoldingRecord holding) {
         holding.validate();
-        return repo.save(holding);
+        return repository.save(holding);
     }
 
-    public List<HoldingRecord> getHoldingsByInvestor(Long investorId) {
-        return repo.findByInvestorId(investorId);
+    @Override
+    public List<HoldingRecord> getByInvestor(Long investorId) {
+        return repository.findByInvestorId(investorId);
     }
 
-    public HoldingRecord getHoldingById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("not found"));
-    }
-
-    public List<HoldingRecord> getAllHoldings() {
-        return repo.findAll();
+    @Override
+    public List<HoldingRecord> getHighValueHoldings(Double minValue) {
+        return repository.findByValueGreaterThan(minValue);
     }
 }
