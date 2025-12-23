@@ -36,7 +36,29 @@ public class InvestorProfile {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
-    // Add these missing getters/setters
+    // Constructors
+    public InvestorProfile() {
+    }
+    
+    public InvestorProfile(Long userId, String riskTolerance, String investmentHorizon, 
+                          BigDecimal initialInvestment, BigDecimal currentInvestment) {
+        this.userId = userId;
+        this.riskTolerance = riskTolerance;
+        this.investmentHorizon = investmentHorizon;
+        this.initialInvestment = initialInvestment;
+        this.currentInvestment = currentInvestment;
+        this.isActive = true;
+    }
+    
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
+    }
+    
     public Long getUserId() {
         return userId;
     }
@@ -83,15 +105,6 @@ public class InvestorProfile {
     
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
-    }
-    
-    // Existing getters/setters
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
     }
     
     public LocalDateTime getCreatedAt() {
