@@ -1,62 +1,71 @@
-package com.example.demo.service.impl;
+package com.example.demo.Impl;
 
 import com.example.demo.entity.AssetClassAllocationRule;
+import com.example.demo.entity.InvestorProfile;
+import com.example.demo.entity.enums.AssetClassType;
 import com.example.demo.repository.AssetClassAllocationRuleRepository;
-import com.example.demo.service.AllocationRuleService;
+import com.example.demo.repository.InvestorProfileRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class AllocationRuleServiceImpl implements AllocationRuleService {
-
-    private final AssetClassAllocationRuleRepository ruleRepository;
-
-    public AllocationRuleServiceImpl(AssetClassAllocationRuleRepository ruleRepository) {
-        this.ruleRepository = ruleRepository;
-    }
-
+    
+    @Autowired
+    private AssetClassAllocationRuleRepository allocationRuleRepository;
+    
+    @Autowired
+    private InvestorProfileRepository investorProfileRepository;
+    
     @Override
-    public AssetClassAllocationRule createRule(Long investorId, String assetClass, Double targetPercentage) {
-        AssetClassAllocationRule rule = new AssetClassAllocationRule();
-        rule.setInvestorId(investorId);
-        rule.setAssetClass(assetClass);
-        rule.setTargetPercentage(targetPercentage);
-        rule.setActive(true);
-        
-        return ruleRepository.save(rule);
-    }
-
-    @Override
-    public AssetClassAllocationRule updateRule(Long ruleId, Double targetPercentage, Boolean active) {
-        AssetClassAllocationRule rule = ruleRepository.findById(ruleId).orElse(null);
-        if (rule == null) {
+    public AssetClassAllocationRule createAllocationRule(Long investorProfileId, AssetClassType assetClass, 
+                                                         Double targetPercentage, Double tolerancePercentage) {
+        InvestorProfile profile = investorProfileRepository.findById(investorProfileId).orElse(null);
+        if (profile == null) {
             return null;
         }
-
-        if (targetPercentage != null) {
+        
+        AssetClassAllocationRule rule = new AssetClassAllocationRule();
+        rule.setAssetClass(assetClass);
+        rule.setTargetPercentage(targetPercentage);
+        rule.setTolerancePercentage(tolerancePercentage);
+        rule.setInvestorProfile(profile);
+        
+        return allocationRuleRepository.save(rule);
+    }
+    
+    @Override
+    public List<AssetClassAllocationRule> getAllocationRulesByInvestorProfile(Long investorProfileId) {
+        return allocationRuleRepository.findByInvestorProfileId(investorProfileId);
+    }
+    
+    @Override
+    public AssetClassAllocationRule getAllocationRuleById(Long id) {
+        return allocationRuleRepository.findById(id).orElse(null);
+    }
+    
+    @Override
+    public AssetClassAllocationRule updateAllocationRule(Long id, Double targetPercentage, 
+                                                        Double tolerancePercentage, Boolean isActive) {
+        AssetClassAllocationRule rule = allocationRuleRepository.findById(id).orElse(null);
+        if (rule != null) {
             rule.setTargetPercentage(targetPercentage);
+            rule.setTolerancePercentage(tolerancePercentage);
+            rule.setIsActive(isActive);
+            return allocationRuleRepository.save(rule);
         }
-
-        if (active != null) {
-            rule.setActive(active);
-        }
-
-        return ruleRepository.save(rule);
+        return null;
     }
-
+    
     @Override
-    public List<AssetClassAllocationRule> getRulesByInvestor(Long investorId) {
-        return ruleRepository.findByInvestorId(investorId);
+    public void deleteAllocationRule(Long id) {
+        allocationRuleRepository.deleteById(id);
     }
-
+    
     @Override
-    public AssetClassAllocationRule getRuleById(Long id) {
-        return ruleRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public List<AssetClassAllocationRule> getAllRules() {
-        return ruleRepository.findAll();
+    public List<AssetClassAllocationRule> getActiveAllocationRules(Long investorProfileId) {
+        return allocationRuleRepository.findByInvestorProfileIdAndIsActive(investorProfileId, true);
     }
 }

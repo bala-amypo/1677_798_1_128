@@ -1,12 +1,15 @@
-package com.example.demo.service;
+package com.example.demo.Impl;
 
 import com.example.demo.entity.AllocationSnapshot;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface AllocationSnapshotService {
-    AllocationSnapshot createSnapshot(Long investorId);
+    AllocationSnapshot createSnapshot(Long investorProfileId);
     AllocationSnapshot getSnapshotById(Long id);
-    List<AllocationSnapshot> getSnapshotsByInvestor(Long investorId, LocalDate startDate, LocalDate endDate);
-    List<AllocationSnapshot> getAllSnapshots();
+    List<AllocationSnapshot> getSnapshotsByInvestorProfile(Long investorProfileId);
+    List<AllocationSnapshot> getSnapshotsByTimeRange(LocalDateTime start, LocalDateTime end);
+    Map<String, Double> calculateAssetAllocations(Long investorProfileId);
+    void deleteSnapshot(Long id);
 }
