@@ -4,38 +4,27 @@ import com.example.demo.entity.InvestorProfile;
 import com.example.demo.repository.InvestorProfileRepository;
 import com.example.demo.service.InvestorProfilesService;
 import org.springframework.stereotype.Service;
-import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
+@Transactional
 public class InvestorProfilesServiceImpl implements InvestorProfilesService {
 
-    private final InvestorProfileRepository repo;
+    private final InvestorProfileRepository investorProfileRepository;
 
-    public InvestorProfilesServiceImpl(InvestorProfileRepository repo) {
-        this.repo = repo;
+    public InvestorProfilesServiceImpl(InvestorProfileRepository investorProfileRepository) {
+        this.investorProfileRepository = investorProfileRepository;
     }
 
-    public InvestorProfile createInvestor(InvestorProfile investor) {
-        return repo.save(investor);
+    @Override
+    public Optional<InvestorProfile> getInvestorProfileByInvestorId(String investorId) {
+        return investorProfileRepository.findByInvestorId(investorId);
     }
 
-    public InvestorProfile getInvestorById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("not found"));
-    }
-
-    public InvestorProfile findByInvestorId(String investorId) {
-        return repo.findByInvestorId(investorId)
-                .orElseThrow(() -> new RuntimeException("not found"));
-    }
-
-    public List<InvestorProfile> getAllInvestors() {
-        return repo.findAll();
-    }
-
-    public void updateInvestorStatus(Long id, boolean active) {
-        InvestorProfile p = getInvestorById(id);
-        p.setActive(active);
-        repo.save(p);
+    @Override
+    public InvestorProfile saveInvestorProfile(InvestorProfile profile) {
+        return investorProfileRepository.save(profile);
     }
 }

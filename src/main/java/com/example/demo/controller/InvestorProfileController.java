@@ -3,40 +3,26 @@ package com.example.demo.controller;
 import com.example.demo.entity.InvestorProfile;
 import com.example.demo.service.InvestorProfilesService;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
+
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/investors")
+@RequestMapping("/investors")
 public class InvestorProfileController {
 
-    private final InvestorProfilesService service;
+    private final InvestorProfilesService investorProfilesService;
 
-    public InvestorProfileController(InvestorProfilesService service) {
-        this.service = service;
+    public InvestorProfileController(InvestorProfilesService investorProfilesService) {
+        this.investorProfilesService = investorProfilesService;
+    }
+
+    @GetMapping("/{investorId}")
+    public Optional<InvestorProfile> getInvestor(@PathVariable String investorId) {
+        return investorProfilesService.getInvestorProfileByInvestorId(investorId);
     }
 
     @PostMapping
-    public InvestorProfile create(@RequestBody InvestorProfile p) {
-        return service.createInvestor(p);
-    }
-
-    @GetMapping("/{id}")
-    public InvestorProfile get(@PathVariable Long id) {
-        return service.getInvestorById(id);
-    }
-
-    @GetMapping
-    public List<InvestorProfile> all() {
-        return service.getAllInvestors();
-    }
-
-    @PutMapping("/{id}/status")
-    public void status(@PathVariable Long id, @RequestParam boolean active) {
-        service.updateInvestorStatus(id, active);
-    }
-
-    @GetMapping("/lookup/{investorId}")
-    public InvestorProfile lookup(@PathVariable String investorId) {
-        return service.findByInvestorId(investorId);
+    public InvestorProfile createInvestor(@RequestBody InvestorProfile profile) {
+        return investorProfilesService.saveInvestorProfile(profile);
     }
 }
