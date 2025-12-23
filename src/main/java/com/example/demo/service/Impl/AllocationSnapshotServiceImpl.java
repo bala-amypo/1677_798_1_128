@@ -1,90 +1,72 @@
-package com.example.demo.Impl;
+package com.example.demo.service.impl;
 
-import com.example.demo.entity.AllocationSnapshot;
-import com.example.demo.entity.InvestorProfile;
-import com.example.demo.entity.User;
-import com.example.demo.entity.enums.AssetClassType;
-import com.example.demo.repository.AllocationSnapshotRepository;
-import com.example.demo.repository.InvestorProfileRepository;
-import com.example.demo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.entity.*;
+import com.example.demo.entity.enums.*;
+import com.example.demo.repository.*;
+import com.example.demo.service.AllocationSnapshotService;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AllocationSnapshotServiceImpl implements AllocationSnapshotService {
-    
-    @Autowired
-    private AllocationSnapshotRepository snapshotRepository;
-    
-    @Autowired
-    private InvestorProfileRepository investorProfileRepository;
-    
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Autowired
-    private HoldingRecordServiceImpl holdingRecordService;
-    
+
+    private final AllocationSnapshotRecordRepository snapshotRepo;
+    private final HoldingRecordRepository holdingRepo;
+    private final AssetClassAllocationRuleRepository ruleRepo;
+    private final RebalancingAlertRecordRepository alertRepo;
+
+    public AllocationSnapshotServiceImpl(
+            AllocationSnapshotRecordRepository snapshotRepo,
+            HoldingRecordRepository holdingRepo,
+            AssetClassAllocationRuleRepository ruleRepo,
+            RebalancingAlertRecordRepository alertRepo) {
+
+        this.snapshotRepo = snapshotRepo;
+        this.holdingRepo = holdingRepo;
+        this.ruleRepo = ruleRepo;
+        this.alertRepo = alertRepo;
+    }
+
     @Override
-    public AllocationSnapshot createSnapshot(Long investorProfileId) {
-        InvestorProfile profile = investorProfileRepository.findById(investorProfileId).orElse(null);
-        User user = profile != null ? profile.getUser() : null;
-        
-        if (profile == null || user == null) {
-            return null;
+    public AllocationSnapshotRecord computeSnapshot(Long investorId) {
+
+        List<HoldingRecord> holdings = holdingRepo.findByInvestorId(investorId);
+        if (holdings.isEmpty()) {
+            throw new RuntimeException("No holdings");
         }
-        
-        Double totalPortfolioValue = holdingRecordService.calculateTotalPortfolioValue(investorProfileId);
-        Map<String, Double> allocations = calculateAssetAllocations(investorProfileId);
-        
-        AllocationSnapshot snapshot = new AllocationSnapshot();
-        snapshot.setSnapshotTimestamp(LocalDateTime.now());
-        snapshot.setTotalPortfolioValue(totalPortfolioValue);
-        snapshot.setAssetAllocations(allocations);
-        snapshot.setUser(user);
-        snapshot.setInvestorProfile(profile);
-        
-        return snapshotRepository.save(snapshot);
-    }
-    
-    @Override
-    public AllocationSnapshot getSnapshotById(Long id) {
-        return snapshotRepository.findById(id).orElse(null);
-    }
-    
-    @Override
-    public List<AllocationSnapshot> getSnapshotsByInvestorProfile(Long investorProfileId) {
-        return snapshotRepository.findByInvestorProfileId(investorProfileId);
-    }
-    
-    @Override
-    public List<AllocationSnapshot> getSnapshotsByTimeRange(LocalDateTime start, LocalDateTime end) {
-        return snapshotRepository.findBySnapshotTimestampBetween(start, end);
-    }
-    
-    @Override
-    public Map<String, Double> calculateAssetAllocations(Long investorProfileId) {
-        Map<String, Double> allocations = new HashMap<>();
-        Double totalPortfolioValue = holdingRecordService.calculateTotalPortfolioValue(investorProfileId);
-        
-        if (totalPortfolioValue > 0) {
-            for (AssetClassType assetClass : AssetClassType.values()) {
-                Double assetValue = holdingRecordService.calculateAssetClassValue(investorProfileId, assetClass);
-                Double percentage = (assetValue / totalPortfolioValue) * 100;
-                allocations.put(assetClass.name(), percentage);
+
+        double total = holdings.stream().mapToDouble(HoldingRecord::getCurrentValue).sum();
+
+        Map<AssetClassType, Double> allocation = new EnumMap<>(AssetClassType.class);
+        for (HoldingRecord h : holdings) {
+            allocation.merge(h.getAssetClass(), h.getCurrentValue(), Double::sum);
+        }
+
+        AllocationSnapshotRecord snapshot = new AllocationSnapshotRecord();
+        snapshot.setInvestorId(investorId);
+        snapshot.setTotalPortfolioValue(total);
+        snapshot.setAllocationJson(allocation.toString());
+
+        snapshotRepo.save(snapshot);
+
+        for (AssetClassAllocationRule rule : ruleRepo.findActiveRulesHql(investorId)) {
+            double value = allocation.getOrDefault(rule.getAssetClass(), 0.0);
+            double pct = (value / total) * 100;
+
+            if (pct > rule.getTargetPercentage()) {
+                RebalancingAlertRecord alert = new RebalancingAlertRecord();
+                alert.setInvestorId(investorId);
+                alert.setAssetClass(rule.getAssetClass());
+                alert.setCurrentPercentage(pct);
+                alert.setTargetPercentage(rule.getTargetPercentage());
+                alert.setSeverity(AlertSeverity.HIGH);
+                alert.setMessage("Asset exceeded target allocation");
+
+                alert.validate();
+                alertRepo.save(alert);
             }
         }
-        
-        return allocations;
-    }
-    
-    @Override
-    public void deleteSnapshot(Long id) {
-        snapshotRepository.deleteById(id);
+
+        return snapshot;
     }
 }
