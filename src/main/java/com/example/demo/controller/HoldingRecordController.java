@@ -1,73 +1,38 @@
-package com.example.demo.entity;
+package com.example.demo.controller;
 
-import com.example.demo.entity.enums.AssetClassType;
-import jakarta.persistence.*;
+import com.example.demo.entity.HoldingRecord;
+import com.example.demo.service.HoldingRecordService;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
-@Entity
-@Table(name = "holding_records")
-public class HoldingRecord {
+@RestController
+@RequestMapping("/holdings")
+public class HoldingRecordController {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private final HoldingRecordService service;
 
-    private Long investorId;
-
-    @Enumerated(EnumType.STRING)
-    private AssetClassType assetClass;
-
-    private Double currentValue;
-
-    private LocalDateTime snapshotDate;
-
-    // ===== GETTERS / SETTERS =====
-
-    public Long getId() {
-        return id;
+    public HoldingRecordController(HoldingRecordService service) {
+        this.service = service;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @PostMapping
+    public HoldingRecord record(@RequestBody HoldingRecord holding) {
+        return service.recordHolding(holding);
     }
 
-    public Long getInvestorId() {
-        return investorId;
+    @GetMapping("/investor/{investorId}")
+    public List<HoldingRecord> byInvestor(@PathVariable Long investorId) {
+        return service.getHoldingsByInvestor(investorId);
     }
 
-    public void setInvestorId(Long investorId) {
-        this.investorId = investorId;
+    @GetMapping("/{id}")
+    public HoldingRecord byId(@PathVariable Long id) {
+        return service.getHoldingById(id);
     }
 
-    public AssetClassType getAssetClass() {
-        return assetClass;
-    }
-
-    public void setAssetClass(AssetClassType assetClass) {
-        this.assetClass = assetClass;
-    }
-
-    public Double getCurrentValue() {
-        return currentValue;
-    }
-
-    public void setCurrentValue(Double currentValue) {
-        this.currentValue = currentValue;
-    }
-
-    public LocalDateTime getSnapshotDate() {
-        return snapshotDate;
-    }
-
-    public void setSnapshotDate(LocalDateTime snapshotDate) {
-        this.snapshotDate = snapshotDate;
-    }
-
-    // ===== VALIDATION =====
-    public void validate() {
-        if (currentValue == null || currentValue <= 0) {
-            throw new IllegalArgumentException("must be > 0");
-        }
+    @GetMapping
+    public List<HoldingRecord> all() {
+        return service.getAllHoldings();
     }
 }
