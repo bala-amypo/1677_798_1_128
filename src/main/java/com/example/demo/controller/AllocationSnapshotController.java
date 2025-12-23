@@ -1,54 +1,65 @@
 package com.example.demo.controller;
 
+import com.example.demo.Impl.AllocationSnapshotService;
 import com.example.demo.entity.AllocationSnapshot;
-import com.example.demo.service.AllocationSnapshotService;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/snapshots")
+@RequestMapping("/api/allocation-snapshots")
 public class AllocationSnapshotController {
-
-    private final AllocationSnapshotService allocationSnapshotService;
-
-    public AllocationSnapshotController(AllocationSnapshotService allocationSnapshotService) {
-        this.allocationSnapshotService = allocationSnapshotService;
-    }
-
-    @PostMapping("/investor/{investorId}")
-    public ResponseEntity<AllocationSnapshot> createSnapshot(@PathVariable Long investorId) {
-        AllocationSnapshot snapshot = allocationSnapshotService.createSnapshot(investorId);
+    
+    @Autowired
+    private AllocationSnapshotService snapshotService;
+    
+    @PostMapping("/{investorProfileId}")
+    public ResponseEntity<AllocationSnapshot> createSnapshot(@PathVariable Long investorProfileId) {
+        AllocationSnapshot snapshot = snapshotService.createSnapshot(investorProfileId);
         if (snapshot != null) {
             return ResponseEntity.ok(snapshot);
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
-
+    
     @GetMapping("/{id}")
     public ResponseEntity<AllocationSnapshot> getSnapshotById(@PathVariable Long id) {
-        AllocationSnapshot snapshot = allocationSnapshotService.getSnapshotById(id);
+        AllocationSnapshot snapshot = snapshotService.getSnapshotById(id);
         if (snapshot != null) {
             return ResponseEntity.ok(snapshot);
         }
         return ResponseEntity.notFound().build();
     }
-
-    @GetMapping("/investor/{investorId}")
-    public ResponseEntity<List<AllocationSnapshot>> getSnapshotsByInvestor(
-            @PathVariable Long investorId,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-        List<AllocationSnapshot> snapshots = allocationSnapshotService.getSnapshotsByInvestor(investorId, startDate, endDate);
+    
+    @GetMapping("/investor-profile/{investorProfileId}")
+    public ResponseEntity<List<AllocationSnapshot>> getSnapshotsByInvestorProfile(
+            @PathVariable Long investorProfileId) {
+        List<AllocationSnapshot> snapshots = snapshotService.getSnapshotsByInvestorProfile(investorProfileId);
         return ResponseEntity.ok(snapshots);
     }
-
-    @GetMapping
-    public ResponseEntity<List<AllocationSnapshot>> getAllSnapshots() {
-        List<AllocationSnapshot> snapshots = allocationSnapshotService.getAllSnapshots();
+    
+    @GetMapping("/time-range")
+    public ResponseEntity<List<AllocationSnapshot>> getSnapshotsByTimeRange(
+            @RequestParam LocalDateTime start,
+            @RequestParam LocalDateTime end) {
+        List<AllocationSnapshot> snapshots = snapshotService.getSnapshotsByTimeRange(start, end);
         return ResponseEntity.ok(snapshots);
+    }
+    
+    @GetMapping("/allocations/{investorProfileId}")
+    public ResponseEntity<Map<String, Double>> calculateAssetAllocations(@PathVariable Long investorProfileId) {
+        Map<String, Double> allocations = snapshotService.calculateAssetAllocations(investorProfileId);
+        return ResponseEntity.ok(allocations);
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSnapshot(@PathVariable Long id) {
+        snapshotService.deleteSnapshot(id);
+        return ResponseEntity.ok().build();
     }
 }

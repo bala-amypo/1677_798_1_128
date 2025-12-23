@@ -1,16 +1,15 @@
 package com.example.demo.controller;
 
+import com.example.demo.Impl.HoldingRecordService;
 import com.example.demo.entity.HoldingRecord;
-import com.example.demo.service.HoldingRecordService;
+import com.example.demo.entity.enums.AssetClassType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/holding-records")
@@ -20,58 +19,56 @@ public class HoldingRecordController {
     private HoldingRecordService holdingRecordService;
     
     @PostMapping
-    public ResponseEntity<HoldingRecord> createHolding(@RequestBody HoldingRecord holding) {
-        HoldingRecord createdHolding = holdingRecordService.createHolding(holding);
-        return new ResponseEntity<>(createdHolding, HttpStatus.CREATED);
+    public ResponseEntity<HoldingRecord> createHoldingRecord(
+            @RequestParam Long userId,
+            @RequestParam Long investorProfileId,
+            @RequestParam AssetClassType assetClass,
+            @RequestParam String assetName,
+            @RequestParam Integer quantity,
+            @RequestParam Double pricePerUnit,
+            @RequestParam LocalDate recordDate) {
+        HoldingRecord record = holdingRecordService.createHoldingRecord(
+                userId, investorProfileId, assetClass, assetName, quantity, pricePerUnit, recordDate);
+        if (record != null) {
+            return ResponseEntity.ok(record);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
     
-    @PutMapping("/{id}")
-    public ResponseEntity<HoldingRecord> updateHolding(@PathVariable Long id, @RequestBody HoldingRecord holding) {
-        HoldingRecord updatedHolding = holdingRecordService.updateHolding(id, holding);
-        return ResponseEntity.ok(updatedHolding);
+    @GetMapping("/investor-profile/{investorProfileId}")
+    public ResponseEntity<List<HoldingRecord>> getHoldingRecordsByInvestorProfile(
+            @PathVariable Long investorProfileId) {
+        List<HoldingRecord> records = holdingRecordService.getHoldingRecordsByInvestorProfile(investorProfileId);
+        return ResponseEntity.ok(records);
     }
     
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteHolding(@PathVariable Long id) {
-        holdingRecordService.deleteHolding(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<HoldingRecord>> getHoldingRecordsByUser(@PathVariable Long userId) {
+        List<HoldingRecord> records = holdingRecordService.getHoldingRecordsByUser(userId);
+        return ResponseEntity.ok(records);
     }
     
-    @GetMapping("/{id}")
-    public ResponseEntity<HoldingRecord> getHoldingById(@PathVariable Long id) {
-        HoldingRecord holding = holdingRecordService.getHoldingById(id);
-        return ResponseEntity.ok(holding);
-    }
-    
-    @GetMapping("/portfolio/{portfolioId}")
-    public ResponseEntity<List<HoldingRecord>> getHoldingsByPortfolioId(@PathVariable Long portfolioId) {
-        List<HoldingRecord> holdings = holdingRecordService.getHoldingsByPortfolioId(portfolioId);
-        return ResponseEntity.ok(holdings);
-    }
-    
-    @GetMapping("/portfolio/{portfolioId}/date")
-    public ResponseEntity<List<HoldingRecord>> getHoldingsByPortfolioIdAndDate(
-            @PathVariable Long portfolioId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        List<HoldingRecord> holdings = holdingRecordService.getHoldingsByPortfolioIdAndDate(portfolioId, date);
-        return ResponseEntity.ok(holdings);
-    }
-    
-    @GetMapping("/asset-class/{assetClass}")
-    public ResponseEntity<List<HoldingRecord>> getHoldingsByAssetClass(@PathVariable String assetClass) {
-        List<HoldingRecord> holdings = holdingRecordService.getHoldingsByAssetClass(assetClass);
-        return ResponseEntity.ok(holdings);
-    }
-    
-    @GetMapping("/portfolio/{portfolioId}/value")
-    public ResponseEntity<BigDecimal> calculatePortfolioValue(@PathVariable Long portfolioId) {
-        BigDecimal value = holdingRecordService.calculatePortfolioValue(portfolioId);
+    @GetMapping("/portfolio-value/{investorProfileId}")
+    public ResponseEntity<Double> getTotalPortfolioValue(@PathVariable Long investorProfileId) {
+        Double value = holdingRecordService.calculateTotalPortfolioValue(investorProfileId);
         return ResponseEntity.ok(value);
     }
     
-    @GetMapping("/portfolio/{portfolioId}/allocation")
-    public ResponseEntity<Map<String, BigDecimal>> calculateAssetClassAllocation(@PathVariable Long portfolioId) {
-        Map<String, BigDecimal> allocation = holdingRecordService.calculateAssetClassAllocation(portfolioId);
-        return ResponseEntity.ok(allocation);
+    @PutMapping("/{id}")
+    public ResponseEntity<HoldingRecord> updateHoldingRecord(
+            @PathVariable Long id,
+            @RequestParam Integer quantity,
+            @RequestParam Double pricePerUnit) {
+        HoldingRecord record = holdingRecordService.updateHoldingRecord(id, quantity, pricePerUnit);
+        if (record != null) {
+            return ResponseEntity.ok(record);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteHoldingRecord(@PathVariable Long id) {
+        holdingRecordService.deleteHoldingRecord(id);
+        return ResponseEntity.ok().build();
     }
 }
