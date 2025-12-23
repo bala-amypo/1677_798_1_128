@@ -1,9 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "holding_records")
@@ -15,14 +12,14 @@ public class HoldingRecord {
 
     private Long investorId;
 
-    @Enumerated(EnumType.STRING)
-    private AssetClassType assetClass;
+    private String assetClass;
+
+    private Double quantity;
 
     private Double currentValue;
 
-    private LocalDateTime snapshotDate;
-
-    // ===== GETTERS / SETTERS =====
+    public HoldingRecord() {
+    }
 
     public Long getId() {
         return id;
@@ -40,12 +37,20 @@ public class HoldingRecord {
         this.investorId = investorId;
     }
 
-    public AssetClassType getAssetClass() {
+    public String getAssetClass() {
         return assetClass;
     }
 
-    public void setAssetClass(AssetClassType assetClass) {
+    public void setAssetClass(String assetClass) {
         this.assetClass = assetClass;
+    }
+
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
     }
 
     public Double getCurrentValue() {
@@ -54,20 +59,5 @@ public class HoldingRecord {
 
     public void setCurrentValue(Double currentValue) {
         this.currentValue = currentValue;
-    }
-
-    public LocalDateTime getSnapshotDate() {
-        return snapshotDate;
-    }
-
-    public void setSnapshotDate(LocalDateTime snapshotDate) {
-        this.snapshotDate = snapshotDate;
-    }
-
-    // ===== VALIDATION =====
-    public void validate() {
-        if (currentValue == null || currentValue <= 0) {
-            throw new IllegalArgumentException("must be > 0");
-        }
     }
 }

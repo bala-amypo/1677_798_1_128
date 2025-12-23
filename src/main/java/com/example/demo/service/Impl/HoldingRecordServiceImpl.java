@@ -4,12 +4,10 @@ import com.example.demo.entity.HoldingRecord;
 import com.example.demo.repository.HoldingRecordRepository;
 import com.example.demo.service.HoldingRecordService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class HoldingRecordServiceImpl implements HoldingRecordService {
 
     private final HoldingRecordRepository repository;
@@ -20,7 +18,6 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
 
     @Override
     public HoldingRecord recordHolding(HoldingRecord holding) {
-        holding.validate();
         return repository.save(holding);
     }
 
@@ -32,7 +29,7 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
     @Override
     public HoldingRecord getHoldingById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("not found"));
+                .orElseThrow(() -> new RuntimeException("Holding not found"));
     }
 
     @Override

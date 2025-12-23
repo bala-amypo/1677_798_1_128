@@ -17,7 +17,7 @@ public class HoldingRecordController {
     }
 
     @PostMapping
-    public HoldingRecord record(@RequestBody HoldingRecord holding) {
+    public HoldingRecord create(@RequestBody HoldingRecord holding) {
         return service.recordHolding(holding);
     }
 
