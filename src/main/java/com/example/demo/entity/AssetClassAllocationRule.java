@@ -4,25 +4,51 @@ import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "asset_allocation_rules")
 public class AssetClassAllocationRule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long investorId;
-
     @Enumerated(EnumType.STRING)
     private AssetClassType assetClass;
 
-    private Double targetPercentage;
-    private Boolean active = true;
+    private double targetPercentage;
 
-    public void validate() {
-        if (targetPercentage < 0 || targetPercentage > 100) {
-            throw new IllegalArgumentException("between 0 and 100");
-        }
+    private boolean active;
+
+    // ===== Getters & Setters =====
+
+    public Long getId() {
+        return id;
     }
 
-    // getters and setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public AssetClassType getAssetClass() {
+        return assetClass;
+    }
+
+    public void setAssetClass(AssetClassType assetClass) {
+        this.assetClass = assetClass;
+    }
+
+    public double getTargetPercentage() {
+        return targetPercentage;
+    }
+
+    public void setTargetPercentage(double targetPercentage) {
+        this.targetPercentage = targetPercentage;
+    }
+
+    public boolean getActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 }

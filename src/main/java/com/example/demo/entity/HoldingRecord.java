@@ -2,9 +2,9 @@ package com.example.demo.entity;
 
 import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "holding_records")
 public class HoldingRecord {
 
     @Id
@@ -16,14 +16,39 @@ public class HoldingRecord {
     @Enumerated(EnumType.STRING)
     private AssetClassType assetClass;
 
-    private Double currentValue;
-    private LocalDateTime snapshotDate = LocalDateTime.now();
+    private double currentValue;
 
-    public void validate() {
-        if (currentValue <= 0) {
-            throw new IllegalArgumentException("must be > 0");
-        }
+    // ===== Getters & Setters =====
+
+    public Long getId() {
+        return id;
     }
 
-    // getters and setters
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getInvestorId() {
+        return investorId;
+    }
+
+    public void setInvestorId(Long investorId) {
+        this.investorId = investorId;
+    }
+
+    public AssetClassType getAssetClass() {
+        return assetClass;
+    }
+
+    public void setAssetClass(AssetClassType assetClass) {
+        this.assetClass = assetClass;
+    }
+
+    public double getCurrentValue() {
+        return currentValue;
+    }
+
+    public void setCurrentValue(double currentValue) {
+        this.currentValue = currentValue;
+    }
 }
