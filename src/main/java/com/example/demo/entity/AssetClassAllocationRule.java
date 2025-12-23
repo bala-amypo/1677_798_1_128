@@ -4,40 +4,72 @@ import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "asset_allocation_rules")
+@Table(name = "asset_class_allocation_rules")
 public class AssetClassAllocationRule {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private Long investorId;   // ✅ REQUIRED FOR findByInvestorId
+
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private AssetClassType assetClass;
 
-    private double targetPercentage;
+    @Column(nullable = false)
+    private Double targetPercentage;
 
-    private boolean active;
+    @Column(nullable = false)
+    private Boolean active = true;
 
-    // ===== Validation =====
-    public void validate() {
-        if (assetClass == null) {
-            throw new IllegalArgumentException("Asset class is required");
-        }
-        if (targetPercentage <= 0 || targetPercentage > 100) {
-            throw new IllegalArgumentException("Target percentage must be between 0 and 100");
-        }
+    // ===== GETTERS & SETTERS =====
+
+    public Long getId() {
+        return id;
     }
 
-    // ===== Getters & Setters =====
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public AssetClassType getAssetClass() { return assetClass; }
-    public void setAssetClass(AssetClassType assetClass) { this.assetClass = assetClass; }
+    public Long getInvestorId() {
+        return investorId;
+    }
 
-    public double getTargetPercentage() { return targetPercentage; }
-    public void setTargetPercentage(double targetPercentage) { this.targetPercentage = targetPercentage; }
+    public void setInvestorId(Long investorId) {
+        this.investorId = investorId;
+    }
 
-    public boolean getActive() { return active; }
-    public void setActive(boolean active) { this.active = active; }
+    public AssetClassType getAssetClass() {
+        return assetClass;
+    }
+
+    public void setAssetClass(AssetClassType assetClass) {
+        this.assetClass = assetClass;
+    }
+
+    public Double getTargetPercentage() {
+        return targetPercentage;
+    }
+
+    public void setTargetPercentage(Double targetPercentage) {
+        this.targetPercentage = targetPercentage;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    // ===== VALIDATION =====
+    public void validate() {
+        if (targetPercentage == null || targetPercentage < 0 || targetPercentage > 100) {
+            throw new IllegalArgumentException("between 0 and 100");
+        }
+    }
 }
