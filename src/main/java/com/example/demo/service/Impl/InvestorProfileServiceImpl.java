@@ -3,73 +3,110 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.InvestorProfile;
 import com.example.demo.repository.InvestorProfileRepository;
 import com.example.demo.service.InvestorProfileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-@Transactional
 public class InvestorProfileServiceImpl implements InvestorProfileService {
-
-    private final InvestorProfileRepository investorProfileRepository;
-
-    public InvestorProfileServiceImpl(InvestorProfileRepository investorProfileRepository) {
-        this.investorProfileRepository = investorProfileRepository;
-    }
-
+    
+    @Autowired
+    private InvestorProfileRepository investorProfileRepository;
+    
     @Override
-    public InvestorProfile createProfile(InvestorProfile profile) {
+    @Transactional
+    public InvestorProfile createProfile(Long userId, String riskTolerance, 
+                                        String investmentHorizon, BigDecimal initialInvestment) {
+        InvestorProfile profile = new InvestorProfile();
+        profile.setUserId(userId);
+        profile.setRiskTolerance(riskTolerance);
+        profile.setInvestmentHorizon(investmentHorizon);
+        profile.setInitialInvestment(initialInvestment);
+        profile.setCurrentInvestment(initialInvestment);
+        profile.setIsActive(true);
+        profile.setCreatedAt(LocalDateTime.now());
+        profile.setUpdatedAt(LocalDateTime.now());
+        
         return investorProfileRepository.save(profile);
     }
-
+    
     @Override
-    public InvestorProfile getProfileById(Long id) {
-        return investorProfileRepository.findById(id).orElse(null);
+    public Optional<InvestorProfile> getProfileByUserId(Long userId) {
+        return investorProfileRepository.findByUserId(userId);
     }
-
+    
     @Override
-    public InvestorProfile getProfileByUserId(Long userId) {
-        return investorProfileRepository.findByUserId(userId).orElse(null);
-    }
-
-    @Override
-    public List<InvestorProfile> getAllProfiles() {
-        return investorProfileRepository.findAll();
-    }
-
-    @Override
-    public InvestorProfile updateProfile(Long id, InvestorProfile profile) {
-        InvestorProfile existing = getProfileById(id);
-        if (existing != null) {
-            existing.setUserId(profile.getUserId());
-            existing.setRiskTolerance(profile.getRiskTolerance());
-            existing.setInvestmentHorizon(profile.getInvestmentHorizon());
-            existing.setInitialInvestment(profile.getInitialInvestment());
-            existing.setCurrentInvestment(profile.getCurrentInvestment());
-            existing.setActive(profile.isActive());
-            return investorProfileRepository.save(existing);
-        }
-        return null;
-    }
-
-    @Override
-    public InvestorProfile updateProfileStatus(Long id, boolean active) {
-        InvestorProfile profile = getProfileById(id);
-        if (profile != null) {
-            profile.setActive(active);
+    @Transactional
+    public InvestorProfile updateProfile(Long userId, String riskTolerance, 
+                                        String investmentHorizon, BigDecimal currentInvestment) {
+        Optional<InvestorProfile> existingProfile = investorProfileRepository.findByUserId(userId);
+        if (existingProfile.isPresent()) {
+            InvestorProfile profile = existingProfile.get();
+            profile.setRiskTolerance(riskTolerance);
+            profile.setInvestmentHorizon(investmentHorizon);
+            profile.setCurrentInvestment(currentInvestment);
+            profile.setUpdatedAt(LocalDateTime.now());
+            
             return investorProfileRepository.save(profile);
         }
-        return null;
+        throw new RuntimeException("Investor profile not found for user ID: " + userId);
     }
-
+    
     @Override
-    public void deleteProfile(Long id) {
-        investorProfileRepository.deleteById(id);
+    @Transactional
+    public void updateInvestorStatus(Long userId, boolean isActive) {
+        Optional<InvestorProfile> existingProfile = investorProfileRepository.findByUserId(userId);
+        if (existingProfile.isPresent()) {
+            InvestorProfile profile = existingProfile.get();
+            profile.setIsActive(isActive);
+            profile.setUpdatedAt(LocalDateTime.now());
+            investorProfileRepository.save(profile);
+        } else {
+            throw new RuntimeException("Investor profile not found for user ID: " + userId);
+        }
     }
-
+    
     @Override
-    public boolean profileExistsForUser(Long userId) {
+    @Transactional
+    public void updateCurrentInvestment(Long userId, BigDecimal currentInvestment) {
+        Optional<InvestorProfile> existingProfile = investorProfileRepository.findByUserId(userId);
+        if (existingProfile.isPresent()) {
+            InvestorProfile profile = existingProfile.get();
+            profile.setCurrentInvestment(currentInvestment);
+            profile.setUpdatedAt(LocalDateTime.now());
+            investorProfileRepository.save(profile);
+        } else {
+            throw new RuntimeException("Investor profile not found for user ID: " + userId);
+        }
+    }
+    
+    @Override
+    public List<InvestorProfile> getAllActiveProfiles() {
+        // Since we don't have a direct query, we'll filter in service layer
+        List<InvestorProfile> allProfiles = investorProfileRepository.findAll();
+        return allProfiles.stream()
+                .filter(profile -> Boolean.TRUE.equals(profile.getIsActive()))
+                .toList();
+    }
+    
+    @Override
+    public boolean existsByUserId(Long userId) {
         return investorProfileRepository.existsByUserId(userId);
+    }
+    
+    @Override
+    @Transactional
+    public void deleteProfile(Long userId) {
+        Optional<InvestorProfile> existingProfile = investorProfileRepository.findByUserId(userId);
+        if (existingProfile.isPresent()) {
+            investorProfileRepository.delete(existingProfile.get());
+        } else {
+            throw new RuntimeException("Investor profile not found for user ID: " + userId);
+        }
     }
 }
