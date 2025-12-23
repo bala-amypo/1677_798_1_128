@@ -1,71 +1,47 @@
-package com.example.demo.Impl;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.AssetClassAllocationRule;
-import com.example.demo.entity.InvestorProfile;
-import com.example.demo.entity.enums.AssetClassType;
 import com.example.demo.repository.AssetClassAllocationRuleRepository;
-import com.example.demo.repository.InvestorProfileRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.AllocationRuleService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class AllocationRuleServiceImpl implements AllocationRuleService {
-    
-    @Autowired
-    private AssetClassAllocationRuleRepository allocationRuleRepository;
-    
-    @Autowired
-    private InvestorProfileRepository investorProfileRepository;
-    
-    @Override
-    public AssetClassAllocationRule createAllocationRule(Long investorProfileId, AssetClassType assetClass, 
-                                                         Double targetPercentage, Double tolerancePercentage) {
-        InvestorProfile profile = investorProfileRepository.findById(investorProfileId).orElse(null);
-        if (profile == null) {
-            return null;
-        }
-        
-        AssetClassAllocationRule rule = new AssetClassAllocationRule();
-        rule.setAssetClass(assetClass);
-        rule.setTargetPercentage(targetPercentage);
-        rule.setTolerancePercentage(tolerancePercentage);
-        rule.setInvestorProfile(profile);
-        
-        return allocationRuleRepository.save(rule);
+
+    private final AssetClassAllocationRuleRepository repo;
+
+    public AllocationRuleServiceImpl(AssetClassAllocationRuleRepository repo) {
+        this.repo = repo;
     }
-    
-    @Override
-    public List<AssetClassAllocationRule> getAllocationRulesByInvestorProfile(Long investorProfileId) {
-        return allocationRuleRepository.findByInvestorProfileId(investorProfileId);
+
+    public AssetClassAllocationRule createRule(AssetClassAllocationRule rule) {
+        rule.validate();
+        return repo.save(rule);
     }
-    
-    @Override
-    public AssetClassAllocationRule getAllocationRuleById(Long id) {
-        return allocationRuleRepository.findById(id).orElse(null);
+
+    public AssetClassAllocationRule updateRule(Long id, AssetClassAllocationRule rule) {
+        AssetClassAllocationRule r = getRuleById(id);
+        r.setTargetPercentage(rule.getTargetPercentage());
+        r.setActive(rule.getActive());
+        r.validate();
+        return repo.save(r);
     }
-    
-    @Override
-    public AssetClassAllocationRule updateAllocationRule(Long id, Double targetPercentage, 
-                                                        Double tolerancePercentage, Boolean isActive) {
-        AssetClassAllocationRule rule = allocationRuleRepository.findById(id).orElse(null);
-        if (rule != null) {
-            rule.setTargetPercentage(targetPercentage);
-            rule.setTolerancePercentage(tolerancePercentage);
-            rule.setIsActive(isActive);
-            return allocationRuleRepository.save(rule);
-        }
-        return null;
+
+    public List<AssetClassAllocationRule> getRulesByInvestor(Long investorId) {
+        return repo.findByInvestorId(investorId);
     }
-    
-    @Override
-    public void deleteAllocationRule(Long id) {
-        allocationRuleRepository.deleteById(id);
+
+    public List<AssetClassAllocationRule> getActiveRules(Long investorId) {
+        return repo.findActiveRulesHql(investorId);
     }
-    
-    @Override
-    public List<AssetClassAllocationRule> getActiveAllocationRules(Long investorProfileId) {
-        return allocationRuleRepository.findByInvestorProfileIdAndIsActive(investorProfileId, true);
+
+    public AssetClassAllocationRule getRuleById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("not found"));
+    }
+
+    public List<AssetClassAllocationRule> getAllRules() {
+        return repo.findAll();
     }
 }

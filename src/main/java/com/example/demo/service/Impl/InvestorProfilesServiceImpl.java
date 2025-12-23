@@ -1,65 +1,41 @@
-package com.example.demo.Impl;
+package com.example.demo.service.impl;
 
 import com.example.demo.entity.InvestorProfile;
-import com.example.demo.entity.User;
 import com.example.demo.repository.InvestorProfileRepository;
-import com.example.demo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.InvestorProfilesService;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 public class InvestorProfilesServiceImpl implements InvestorProfilesService {
-    
-    @Autowired
-    private InvestorProfileRepository investorProfileRepository;
-    
-    @Autowired
-    private UserRepository userRepository;
-    
-    @Override
-    public InvestorProfile createInvestorProfile(String name, String investorId, Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
-        if (user == null) {
-            return null;
-        }
-        
-        InvestorProfile profile = new InvestorProfile();
-        profile.setName(name);
-        profile.setInvestorId(investorId);
-        profile.setUser(user);
-        
-        return investorProfileRepository.save(profile);
+
+    private final InvestorProfileRepository repo;
+
+    public InvestorProfilesServiceImpl(InvestorProfileRepository repo) {
+        this.repo = repo;
     }
-    
-    @Override
-    public InvestorProfile getInvestorProfileById(Long id) {
-        return investorProfileRepository.findById(id).orElse(null);
+
+    public InvestorProfile createInvestor(InvestorProfile investor) {
+        return repo.save(investor);
     }
-    
-    @Override
-    public InvestorProfile getInvestorProfileByInvestorId(String investorId) {
-        return investorProfileRepository.findByInvestorId(investorId).orElse(null);
+
+    public InvestorProfile getInvestorById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("not found"));
     }
-    
-    @Override
-    public List<InvestorProfile> getAllInvestorProfiles() {
-        return investorProfileRepository.findAll();
+
+    public InvestorProfile findByInvestorId(String investorId) {
+        return repo.findByInvestorId(investorId)
+                .orElseThrow(() -> new RuntimeException("not found"));
     }
-    
-    @Override
-    public InvestorProfile updateInvestorProfile(Long id, String name) {
-        InvestorProfile profile = investorProfileRepository.findById(id).orElse(null);
-        if (profile != null) {
-            profile.setName(name);
-            return investorProfileRepository.save(profile);
-        }
-        return null;
+
+    public List<InvestorProfile> getAllInvestors() {
+        return repo.findAll();
     }
-    
-    @Override
-    public void deleteInvestorProfile(Long id) {
-        investorProfileRepository.deleteById(id);
+
+    public void updateInvestorStatus(Long id, boolean active) {
+        InvestorProfile p = getInvestorById(id);
+        p.setActive(active);
+        repo.save(p);
     }
 }

@@ -1,112 +1,41 @@
-package com.example.demo.Impl;
+package com.example.demo.service.impl;
 
-import com.example.demo.entity.AllocationSnapshot;
-import com.example.demo.entity.AssetClassAllocationRule;
-import com.example.demo.entity.InvestorProfile;
 import com.example.demo.entity.RebalancingAlertRecord;
-import com.example.demo.entity.enums.AlertSeverity;
-import com.example.demo.entity.enums.AssetClassType;
 import com.example.demo.repository.RebalancingAlertRecordRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.RebalancingAlertService;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class RebalancingAlertServiceImpl implements RebalancingAlertService {
-    
-    @Autowired
-    private RebalancingAlertRecordRepository alertRepository;
-    
-    @Autowired
-    private AllocationRuleServiceImpl allocationRuleService;
-    
-    @Autowired
-    private AllocationSnapshotServiceImpl snapshotService;
-    
-    @Autowired
-    private InvestorProfilesServiceImpl investorProfileService;
-    
-    @Override
-    public List<RebalancingAlertRecord> checkForRebalancingAlerts(Long investorProfileId) {
-        List<RebalancingAlertRecord> alerts = new ArrayList<>();
-        InvestorProfile profile = investorProfileService.getInvestorProfileById(investorProfileId);
-        
-        if (profile == null) {
-            return alerts;
-        }
-        
-        AllocationSnapshot snapshot = snapshotService.createSnapshot(investorProfileId);
-        Map<String, Double> allocations = snapshot.getAssetAllocations();
-        List<AssetClassAllocationRule> activeRules = allocationRuleService.getActiveAllocationRules(investorProfileId);
-        
-        for (AssetClassAllocationRule rule : activeRules) {
-            AssetClassType assetClass = rule.getAssetClass();
-            Double targetPercentage = rule.getTargetPercentage();
-            Double tolerancePercentage = rule.getTolerancePercentage();
-            Double currentPercentage = allocations.get(assetClass.name());
-            
-            if (currentPercentage != null && currentPercentage > (targetPercentage + tolerancePercentage)) {
-                Double driftAmount = currentPercentage - targetPercentage;
-                AlertSeverity severity = determineSeverity(driftAmount);
-                
-                RebalancingAlertRecord alert = new RebalancingAlertRecord();
-                alert.setAssetClass(assetClass);
-                alert.setSeverity(severity);
-                alert.setMessage(String.format("%s allocation exceeds target by %.2f%%", 
-                    assetClass.name(), driftAmount));
-                alert.setCurrentPercentage(currentPercentage);
-                alert.setTargetPercentage(targetPercentage);
-                alert.setDriftAmount(driftAmount);
-                alert.setAlertTimestamp(LocalDateTime.now());
-                alert.setInvestorProfile(profile);
-                alert.setAllocationSnapshot(snapshot);
-                
-                alertRepository.save(alert);
-                alerts.add(alert);
-            }
-        }
-        
-        return alerts;
+
+    private final RebalancingAlertRecordRepository repo;
+
+    public RebalancingAlertServiceImpl(RebalancingAlertRecordRepository repo) {
+        this.repo = repo;
     }
-    
-    private AlertSeverity determineSeverity(Double driftAmount) {
-        if (driftAmount >= 10.0) return AlertSeverity.CRITICAL;
-        if (driftAmount >= 5.0) return AlertSeverity.HIGH;
-        if (driftAmount >= 2.0) return AlertSeverity.MEDIUM;
-        return AlertSeverity.LOW;
+
+    public RebalancingAlertRecord createAlert(RebalancingAlertRecord alert) {
+        alert.validate();
+        return repo.save(alert);
     }
-    
-    @Override
-    public List<RebalancingAlertRecord> getAlertsByInvestorProfile(Long investorProfileId) {
-        return alertRepository.findByInvestorProfileId(investorProfileId);
+
+    public void resolveAlert(Long id) {
+        RebalancingAlertRecord a = getAlertById(id);
+        a.setResolved(true);
+        repo.save(a);
     }
-    
-    @Override
-    public List<RebalancingAlertRecord> getUnresolvedAlerts() {
-        return alertRepository.findByIsResolved(false);
+
+    public List<RebalancingAlertRecord> getAlertsByInvestor(Long investorId) {
+        return repo.findByInvestorId(investorId);
     }
-    
-    @Override
-    public List<RebalancingAlertRecord> getAlertsBySeverity(String severity) {
-        return alertRepository.findBySeverityAndIsResolved(AlertSeverity.valueOf(severity.toUpperCase()), false);
+
+    public RebalancingAlertRecord getAlertById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("not found"));
     }
-    
-    @Override
-    public RebalancingAlertRecord resolveAlert(Long alertId) {
-        RebalancingAlertRecord alert = alertRepository.findById(alertId).orElse(null);
-        if (alert != null) {
-            alert.setIsResolved(true);
-            return alertRepository.save(alert);
-        }
-        return null;
-    }
-    
-    @Override
-    public void deleteAlert(Long alertId) {
-        alertRepository.deleteById(alertId);
+
+    public List<RebalancingAlertRecord> getAllAlerts() {
+        return repo.findAll();
     }
 }

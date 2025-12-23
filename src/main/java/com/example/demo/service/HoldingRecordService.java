@@ -1,18 +1,11 @@
-package com.example.demo.Impl;
+package com.example.demo.service;
 
 import com.example.demo.entity.HoldingRecord;
-import com.example.demo.entity.enums.AssetClassType;
-import java.time.LocalDate;
 import java.util.List;
 
 public interface HoldingRecordService {
-    HoldingRecord createHoldingRecord(Long userId, Long investorProfileId, AssetClassType assetClass, 
-                                      String assetName, Integer quantity, Double pricePerUnit, LocalDate recordDate);
-    List<HoldingRecord> getHoldingRecordsByInvestorProfile(Long investorProfileId);
-    List<HoldingRecord> getHoldingRecordsByUser(Long userId);
-    List<HoldingRecord> getHoldingRecordsByAssetClass(Long investorProfileId, AssetClassType assetClass);
-    HoldingRecord updateHoldingRecord(Long id, Integer quantity, Double pricePerUnit);
-    void deleteHoldingRecord(Long id);
-    Double calculateTotalPortfolioValue(Long investorProfileId);
-    Double calculateAssetClassValue(Long investorProfileId, AssetClassType assetClass);
+    HoldingRecord recordHolding(HoldingRecord holding);
+    List<HoldingRecord> getHoldingsByInvestor(Long investorId);
+    HoldingRecord getHoldingById(Long id);
+    List<HoldingRecord> getAllHoldings();
 }
