@@ -4,12 +4,6 @@ import com.example.demo.entity.enums.RoleType;
 import jakarta.persistence.*;
 
 @Entity
-@Table(
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = "username"),
-        @UniqueConstraint(columnNames = "email")
-    }
-)
 public class UserAccount {
 
     @Id
@@ -25,5 +19,5 @@ public class UserAccount {
 
     private Boolean active = true;
 
-    // getters & setters
+    // getters and setters
 }

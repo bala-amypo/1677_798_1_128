@@ -25,5 +25,5 @@ public class HoldingRecord {
         }
     }
 
-    // getters & setters
+    // getters and setters
 }

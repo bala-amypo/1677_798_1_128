@@ -24,5 +24,5 @@ public class AssetClassAllocationRule {
         }
     }
 
-    // getters & setters
+    // getters and setters
 }

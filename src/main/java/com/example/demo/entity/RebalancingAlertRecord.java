@@ -32,5 +32,5 @@ public class RebalancingAlertRecord {
         }
     }
 
-    // getters & setters
+    // getters and setters
 }

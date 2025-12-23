@@ -13,9 +13,9 @@ public class AllocationSnapshotRecord {
     private Long investorId;
     private LocalDateTime snapshotDate = LocalDateTime.now();
     private Double totalPortfolioValue;
-    
+
     @Lob
     private String allocationJson;
 
-    // getters & setters
+    // getters and setters
 }
