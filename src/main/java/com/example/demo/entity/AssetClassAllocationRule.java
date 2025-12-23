@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,17 +11,22 @@ public class AssetClassAllocationRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "investor_id", nullable = false)
-    private Long investorId;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AssetClassType assetClass;
     
-    @Column(name = "asset_class", nullable = false)
-    private String assetClass;
-    
-    @Column(name = "target_percentage", nullable = false)
+    @Column(nullable = false)
     private Double targetPercentage;
     
-    @Column(name = "is_active")
-    private Boolean active = true;
+    @Column(nullable = false)
+    private Double tolerancePercentage;
+    
+    @Column(nullable = false)
+    private Boolean isActive = true;
+    
+    @ManyToOne
+    @JoinColumn(name = "investor_profile_id", nullable = false)
+    private InvestorProfile investorProfile;
     
     public AssetClassAllocationRule() {}
     
@@ -28,15 +34,18 @@ public class AssetClassAllocationRule {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     
-    public Long getInvestorId() { return investorId; }
-    public void setInvestorId(Long investorId) { this.investorId = investorId; }
-    
-    public String getAssetClass() { return assetClass; }
-    public void setAssetClass(String assetClass) { this.assetClass = assetClass; }
+    public AssetClassType getAssetClass() { return assetClass; }
+    public void setAssetClass(AssetClassType assetClass) { this.assetClass = assetClass; }
     
     public Double getTargetPercentage() { return targetPercentage; }
     public void setTargetPercentage(Double targetPercentage) { this.targetPercentage = targetPercentage; }
     
-    public Boolean getActive() { return active; }
-    public void setActive(Boolean active) { this.active = active; }
+    public Double getTolerancePercentage() { return tolerancePercentage; }
+    public void setTolerancePercentage(Double tolerancePercentage) { this.tolerancePercentage = tolerancePercentage; }
+    
+    public Boolean getIsActive() { return isActive; }
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
+    
+    public InvestorProfile getInvestorProfile() { return investorProfile; }
+    public void setInvestorProfile(InvestorProfile investorProfile) { this.investorProfile = investorProfile; }
 }

@@ -1,8 +1,7 @@
 package com.example.demo.entity;
 
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "investor_profiles")
@@ -12,125 +11,46 @@ public class InvestorProfile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "user_id", unique = true)
-    private Long userId;
+    @Column(nullable = false)
+    private String name;
     
-    @Column(name = "risk_tolerance")
-    private String riskTolerance;
+    @Column(nullable = false, unique = true)
+    private String investorId;
     
-    @Column(name = "investment_horizon")
-    private String investmentHorizon;
+    @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
     
-    @Column(name = "initial_investment")
-    private BigDecimal initialInvestment;
+    @OneToMany(mappedBy = "investorProfile", cascade = CascadeType.ALL)
+    private Set<AssetClassAllocationRule> allocationRules;
     
-    @Column(name = "current_investment")
-    private BigDecimal currentInvestment;
+    @OneToMany(mappedBy = "investorProfile", cascade = CascadeType.ALL)
+    private Set<AllocationSnapshot> allocationSnapshots;
     
-    @Column(name = "is_active")
-    private Boolean isActive = true;
+    @OneToMany(mappedBy = "investorProfile", cascade = CascadeType.ALL)
+    private Set<RebalancingAlertRecord> alertRecords;
     
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-    
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-    
-    // Constructors
-    public InvestorProfile() {
-    }
-    
-    public InvestorProfile(Long userId, String riskTolerance, String investmentHorizon, 
-                          BigDecimal initialInvestment, BigDecimal currentInvestment) {
-        this.userId = userId;
-        this.riskTolerance = riskTolerance;
-        this.investmentHorizon = investmentHorizon;
-        this.initialInvestment = initialInvestment;
-        this.currentInvestment = currentInvestment;
-        this.isActive = true;
-    }
+    public InvestorProfile() {}
     
     // Getters and Setters
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
     
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
     
-    public Long getUserId() {
-        return userId;
-    }
+    public String getInvestorId() { return investorId; }
+    public void setInvestorId(String investorId) { this.investorId = investorId; }
     
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    public User getUser() { return user; }
+    public void setUser(User user) { this.user = user; }
     
-    public String getRiskTolerance() {
-        return riskTolerance;
-    }
+    public Set<AssetClassAllocationRule> getAllocationRules() { return allocationRules; }
+    public void setAllocationRules(Set<AssetClassAllocationRule> allocationRules) { this.allocationRules = allocationRules; }
     
-    public void setRiskTolerance(String riskTolerance) {
-        this.riskTolerance = riskTolerance;
-    }
+    public Set<AllocationSnapshot> getAllocationSnapshots() { return allocationSnapshots; }
+    public void setAllocationSnapshots(Set<AllocationSnapshot> allocationSnapshots) { this.allocationSnapshots = allocationSnapshots; }
     
-    public String getInvestmentHorizon() {
-        return investmentHorizon;
-    }
-    
-    public void setInvestmentHorizon(String investmentHorizon) {
-        this.investmentHorizon = investmentHorizon;
-    }
-    
-    public BigDecimal getInitialInvestment() {
-        return initialInvestment;
-    }
-    
-    public void setInitialInvestment(BigDecimal initialInvestment) {
-        this.initialInvestment = initialInvestment;
-    }
-    
-    public BigDecimal getCurrentInvestment() {
-        return currentInvestment;
-    }
-    
-    public void setCurrentInvestment(BigDecimal currentInvestment) {
-        this.currentInvestment = currentInvestment;
-    }
-    
-    public Boolean getIsActive() {
-        return isActive;
-    }
-    
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-    
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-    
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-    
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-    
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-    
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-    
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    public Set<RebalancingAlertRecord> getAlertRecords() { return alertRecords; }
+    public void setAlertRecords(Set<RebalancingAlertRecord> alertRecords) { this.alertRecords = alertRecords; }
 }
