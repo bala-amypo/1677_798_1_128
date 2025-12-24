@@ -1,31 +1,46 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.UserAccount;
-import com.example.demo.config.JwtUtil;
 import com.example.demo.service.UserAccountService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/users")
+@Tag(name = "User Accounts", description = "User account management endpoints")
 public class UserAccountController {
-
-    private final UserAccountService service;
-    private final JwtUtil jwtUtil;
-
-    public UserAccountController(UserAccountService service) {
-        this.service = service;
-        this.jwtUtil = new JwtUtil("secret", 3600000);
+    
+    private final UserAccountService userAccountService;
+    
+    public UserAccountController(UserAccountService userAccountService) {
+        this.userAccountService = userAccountService;
     }
-
-    @PostMapping("/register")
-    public UserAccount register(@RequestBody UserAccount user) {
-        return service.register(user);
+    
+    @GetMapping("/")
+    @Operation(summary = "Get all users")
+    public ResponseEntity<List<UserAccount>> getAllUsers() {
+        List<UserAccount> users = userAccountService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
-
-    @PostMapping("/login")
-    public String login(@RequestParam String username,
-                        @RequestParam String password) {
-        service.login(username, password);
-        return jwtUtil.generateToken(username);
+    
+    @GetMapping("/{id}")
+    @Operation(summary = "Get user by ID")
+    public ResponseEntity<UserAccount> getUserById(@PathVariable Long id) {
+        UserAccount user = userAccountService.getUserById(id);
+        return ResponseEntity.ok(user);
+    }
+    
+    @PutMapping("/{id}/status")
+    @Operation(summary = "Update user status")
+    public ResponseEntity<UserAccount> updateUserStatus(
+            @PathVariable Long id, 
+            @RequestBody Map<String, Boolean> request) {
+        boolean active = request.get("active");
+        UserAccount updated = userAccountService.updateUserStatus(id, active);
+        return ResponseEntity.ok(updated);
     }
 }

@@ -62,4 +62,9 @@ public class AssetClassAllocationRuleServiceImpl implements AssetClassAllocation
         return repository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("Allocation rule not found"));
     }
+    
+    @Override
+    public List<AssetClassAllocationRule> getAllRules() {
+        return repository.findAll(); // ADDED THIS IMPLEMENTATION
+    }
 }
