@@ -25,23 +25,49 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                    HttpServletResponse response, 
                                    FilterChain filterChain) throws ServletException, IOException {
         
+        String path = request.getServletPath();
+        
+        // Skip JWT validation for public endpoints
+        if (path.startsWith("/auth") || 
+            path.equals("/status") || 
+            path.contains("swagger") || 
+            path.contains("api-docs") ||
+            path.contains("webjars") ||
+            path.contains("swagger-resources") ||
+            path.contains("configuration")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
         String header = request.getHeader("Authorization");
         
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
             
-            if (jwtUtil.validateToken(token)) {
-                String username = jwtUtil.extractUsername(token);
-                String role = jwtUtil.extractRole(token);
-                
-                UsernamePasswordAuthenticationToken auth = 
-                    new UsernamePasswordAuthenticationToken(
-                        username, 
-                        null, 
-                        Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
-                    );
-                
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            try {
+                if (jwtUtil.validateToken(token)) {
+                    String username = jwtUtil.extractUsername(token);
+                    String role = jwtUtil.extractRole(token);
+                    
+                    UsernamePasswordAuthenticationToken auth = 
+                        new UsernamePasswordAuthenticationToken(
+                            username, 
+                            null, 
+                            Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
+                        );
+                    
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            } catch (Exception e) {
+                // Token validation failed
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+        } else {
+            // No token for secured endpoint
+            if (!path.startsWith("/auth") && !path.equals("/status")) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
             }
         }
         

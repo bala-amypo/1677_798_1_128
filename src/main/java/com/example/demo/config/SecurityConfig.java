@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,22 +57,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> 
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                // Allow Swagger and authentication endpoints
+                // Allow all public endpoints
                 .requestMatchers(
                     "/auth/**",
+                    "/status",
+                    "/error",
+                    // Add these for Swagger
+                    "/",
+                    "/index.html",
+                    "/*.html",
+                    "/*.css",
+                    "/*.js",
+                    "/favicon.ico",
                     "/swagger-ui/**",
-                    "/v3/api-docs/**",
                     "/swagger-ui.html",
-                    "/webjars/**",
+                    "/v3/api-docs/**",
                     "/swagger-resources/**",
-                    "/configuration/**",
-                    "/status"
+                    "/webjars/**",
+                    "/configuration/**"
                 ).permitAll()
-                // Secure API endpoints
+                // API endpoints with roles
                 .requestMatchers("/api/investors/**").hasAnyRole("ADMIN", "ANALYST")
                 .requestMatchers("/api/allocation-rules/**").hasAnyRole("ADMIN", "ANALYST", "INVESTOR")
                 .requestMatchers("/api/holdings/**").hasAnyRole("ADMIN", "ANALYST", "INVESTOR")
