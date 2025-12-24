@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.RebalancingAlertRecord;
-import com.example.demo.service.RebalancingAlertRecordService;
+import com.example.demo.service.RebalancingAlertService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
