@@ -1,6 +1,5 @@
 package com.example.demo.entity;
 
-import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
 
 @Entity
@@ -10,13 +9,35 @@ public class AssetClassAllocationRule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long investorId;
+    private String assetClass;
+    private double targetPercentage;
+    private Boolean active;
 
-    @Enumerated(EnumType.STRING)
-    private AssetClassType assetClass;
+    public Long getId() {
+        return id;
+    }
 
-    private Double targetPercentage;
-    private Boolean active = true;
+    public String getAssetClass() {
+        return assetClass;
+    }
 
-    // getters & setters
+    public void setAssetClass(String assetClass) {
+        this.assetClass = assetClass;
+    }
+
+    public double getTargetPercentage() {
+        return targetPercentage;
+    }
+
+    public void setTargetPercentage(double targetPercentage) {
+        this.targetPercentage = targetPercentage;
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 }

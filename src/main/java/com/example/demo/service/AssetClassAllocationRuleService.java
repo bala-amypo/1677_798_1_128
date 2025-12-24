@@ -5,13 +5,5 @@ import java.util.List;
 
 public interface AssetClassAllocationRuleService {
 
-    AssetClassAllocationRule createRule(AssetClassAllocationRule rule);
-
-    AssetClassAllocationRule updateRule(Long id, AssetClassAllocationRule updatedRule);
-
-    List<AssetClassAllocationRule> getRulesByInvestor(Long investorId);
-
-    List<AssetClassAllocationRule> getActiveRules(Long investorId);
-
-    AssetClassAllocationRule getRuleById(Long id);
+    List<AssetClassAllocationRule> getAllRules();
 }

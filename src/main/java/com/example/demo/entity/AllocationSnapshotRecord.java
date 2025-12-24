@@ -1,7 +1,6 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 public class AllocationSnapshotRecord {
@@ -11,11 +10,24 @@ public class AllocationSnapshotRecord {
     private Long id;
 
     private Long investorId;
-    private LocalDateTime snapshotDate = LocalDateTime.now();
-    private Double totalPortfolioValue;
+    private double totalPortfolioValue;
 
-    @Lob
+    @Column(columnDefinition = "TEXT")
     private String allocationJson;
 
-    // getters & setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setInvestorId(Long investorId) {
+        this.investorId = investorId;
+    }
+
+    public void setTotalPortfolioValue(double totalPortfolioValue) {
+        this.totalPortfolioValue = totalPortfolioValue;
+    }
+
+    public void setAllocationJson(String allocationJson) {
+        this.allocationJson = allocationJson;
+    }
 }
