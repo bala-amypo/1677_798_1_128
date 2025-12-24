@@ -1,8 +1,6 @@
 package com.example.demo.entity;
 
-import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 public class HoldingRecord {
@@ -11,13 +9,26 @@ public class HoldingRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long investorId;
+    private String assetClass;
+    private double currentValue;
 
-    @Enumerated(EnumType.STRING)
-    private AssetClassType assetClass;
+    public Long getId() {
+        return id;
+    }
 
-    private Double currentValue;
-    private LocalDateTime snapshotDate = LocalDateTime.now();
+    public String getAssetClass() {
+        return assetClass;
+    }
 
-    // getters & setters
+    public void setAssetClass(String assetClass) {
+        this.assetClass = assetClass;
+    }
+
+    public double getCurrentValue() {
+        return currentValue;
+    }
+
+    public void setCurrentValue(double currentValue) {
+        this.currentValue = currentValue;
+    }
 }
