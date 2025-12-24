@@ -1,11 +1,11 @@
-package com.example.demo.repository;
+// package com.example.demo.repository;
 
-import com.example.demo.entity.HoldingRecord;
-import org.springframework.data.jpa.repository.JpaRepository;
+// import com.example.demo.entity.HoldingRecord;
+// import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
+// import java.util.List;
 
-public interface HoldingRecordRepository extends JpaRepository<HoldingRecord, Long> {
+// public interface HoldingRecordRepository extends JpaRepository<HoldingRecord, Long> {
 
-    List<HoldingRecord> findByInvestorId(Long investorId);
-}
+//     List<HoldingRecord> findByInvestorId(Long investorId);
+// }

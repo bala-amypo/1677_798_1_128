@@ -1,5 +1,5 @@
-package com.example.demo.entity.enums;
+// package com.example.demo.entity.enums;
 
-public enum AlertSeverity {
-    LOW, MEDIUM, HIGH
-}
+// public enum AlertSeverity {
+//     LOW, MEDIUM, HIGH
+// }

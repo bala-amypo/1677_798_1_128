@@ -1,16 +1,16 @@
-package com.example.demo.service;
+// package com.example.demo.service;
 
-import com.example.demo.entity.HoldingRecord;
+// import com.example.demo.entity.HoldingRecord;
 
-import java.util.List;
+// import java.util.List;
 
-public interface HoldingRecordService {
+// public interface HoldingRecordService {
 
-    HoldingRecord recordHolding(HoldingRecord holding);
+//     HoldingRecord recordHolding(HoldingRecord holding);
 
-    List<HoldingRecord> getHoldingsByInvestor(Long investorId);
+//     List<HoldingRecord> getHoldingsByInvestor(Long investorId);
 
-    HoldingRecord getHoldingById(Long id);
+//     HoldingRecord getHoldingById(Long id);
 
-    List<HoldingRecord> getAllHoldings();
-}
+//     List<HoldingRecord> getAllHoldings();
+// }

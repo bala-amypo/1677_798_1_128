@@ -1,8 +1,8 @@
-package com.example.demo.service;
+// package com.example.demo.service;
 
-import java.util.Map;
+// import java.util.Map;
 
-public interface AllocationSnapshotService {
+// public interface AllocationSnapshotService {
 
-    Map<String, Double> calculateAllocation(Long investorId);
-}
+//     Map<String, Double> calculateAllocation(Long investorId);
+// }

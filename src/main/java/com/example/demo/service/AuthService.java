@@ -1,10 +1,10 @@
-package com.example.demo.service;
+// package com.example.demo.service;
 
-import com.example.demo.entity.UserAccount;
+// import com.example.demo.entity.UserAccount;
 
-public interface AuthService {
+// public interface AuthService {
 
-    UserAccount register(UserAccount user);
+//     UserAccount register(UserAccount user);
 
-    String login(String username, String password);
-}
+//     String login(String username, String password);
+// }

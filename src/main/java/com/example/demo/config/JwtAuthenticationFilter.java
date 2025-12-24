@@ -1,29 +1,29 @@
-package com.example.demo.config;
+// package com.example.demo.config;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import java.io.IOException;
+// import jakarta.servlet.*;
+// import jakarta.servlet.http.*;
+// import java.io.IOException;
 
-public class JwtAuthenticationFilter extends GenericFilter {
+// public class JwtAuthenticationFilter extends GenericFilter {
 
-    private final JwtTokenProvider provider;
+//     private final JwtTokenProvider provider;
 
-    public JwtAuthenticationFilter(JwtTokenProvider provider) {
-        this.provider = provider;
-    }
+//     public JwtAuthenticationFilter(JwtTokenProvider provider) {
+//         this.provider = provider;
+//     }
 
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-            throws IOException, ServletException {
+//     @Override
+//     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
+//             throws IOException, ServletException {
 
-        HttpServletRequest request = (HttpServletRequest) req;
-        String header = request.getHeader("Authorization");
+//         HttpServletRequest request = (HttpServletRequest) req;
+//         String header = request.getHeader("Authorization");
 
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
-            provider.getUsername(token); // validation only
-        }
+//         if (header != null && header.startsWith("Bearer ")) {
+//             String token = header.substring(7);
+//             provider.getUsername(token); // validation only
+//         }
 
-        chain.doFilter(req, res);
-    }
-}
+//         chain.doFilter(req, res);
+//     }
+// }

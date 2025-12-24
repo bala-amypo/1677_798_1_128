@@ -1,75 +1,75 @@
-package com.example.demo.entity;
+// package com.example.demo.entity;
 
-import com.example.demo.entity.enums.AssetClassType;
-import jakarta.persistence.*;
+// import com.example.demo.entity.enums.AssetClassType;
+// import jakarta.persistence.*;
 
-@Entity
-@Table(name = "asset_class_allocation_rules")
-public class AssetClassAllocationRule {
+// @Entity
+// @Table(name = "asset_class_allocation_rules")
+// public class AssetClassAllocationRule {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+//     @Id
+//     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//     private Long id;
 
-    @Column(nullable = false)
-    private Long investorId;   // ✅ REQUIRED FOR findByInvestorId
+//     @Column(nullable = false)
+//     private Long investorId;   // ✅ REQUIRED FOR findByInvestorId
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private AssetClassType assetClass;
+//     @Enumerated(EnumType.STRING)
+//     @Column(nullable = false)
+//     private AssetClassType assetClass;
 
-    @Column(nullable = false)
-    private Double targetPercentage;
+//     @Column(nullable = false)
+//     private Double targetPercentage;
 
-    @Column(nullable = false)
-    private Boolean active = true;
+//     @Column(nullable = false)
+//     private Boolean active = true;
 
-    // ===== GETTERS & SETTERS =====
+//     // ===== GETTERS & SETTERS =====
 
-    public Long getId() {
-        return id;
-    }
+//     public Long getId() {
+//         return id;
+//     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+//     public void setId(Long id) {
+//         this.id = id;
+//     }
 
-    public Long getInvestorId() {
-        return investorId;
-    }
+//     public Long getInvestorId() {
+//         return investorId;
+//     }
 
-    public void setInvestorId(Long investorId) {
-        this.investorId = investorId;
-    }
+//     public void setInvestorId(Long investorId) {
+//         this.investorId = investorId;
+//     }
 
-    public AssetClassType getAssetClass() {
-        return assetClass;
-    }
+//     public AssetClassType getAssetClass() {
+//         return assetClass;
+//     }
 
-    public void setAssetClass(AssetClassType assetClass) {
-        this.assetClass = assetClass;
-    }
+//     public void setAssetClass(AssetClassType assetClass) {
+//         this.assetClass = assetClass;
+//     }
 
-    public Double getTargetPercentage() {
-        return targetPercentage;
-    }
+//     public Double getTargetPercentage() {
+//         return targetPercentage;
+//     }
 
-    public void setTargetPercentage(Double targetPercentage) {
-        this.targetPercentage = targetPercentage;
-    }
+//     public void setTargetPercentage(Double targetPercentage) {
+//         this.targetPercentage = targetPercentage;
+//     }
 
-    public Boolean getActive() {
-        return active;
-    }
+//     public Boolean getActive() {
+//         return active;
+//     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
+//     public void setActive(Boolean active) {
+//         this.active = active;
+//     }
 
-    // ===== VALIDATION =====
-    public void validate() {
-        if (targetPercentage == null || targetPercentage < 0 || targetPercentage > 100) {
-            throw new IllegalArgumentException("between 0 and 100");
-        }
-    }
-}
+//     // ===== VALIDATION =====
+//     public void validate() {
+//         if (targetPercentage == null || targetPercentage < 0 || targetPercentage > 100) {
+//             throw new IllegalArgumentException("between 0 and 100");
+//         }
+//     }
+// }

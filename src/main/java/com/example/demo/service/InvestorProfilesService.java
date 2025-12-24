@@ -1,11 +1,11 @@
-package com.example.demo.service;
+// package com.example.demo.service;
 
-import com.example.demo.entity.InvestorProfile;
-import java.util.Optional;
+// import com.example.demo.entity.InvestorProfile;
+// import java.util.Optional;
 
-public interface InvestorProfilesService {
+// public interface InvestorProfilesService {
 
-    Optional<InvestorProfile> getInvestorProfileByInvestorId(String investorId);
+//     Optional<InvestorProfile> getInvestorProfileByInvestorId(String investorId);
 
-    InvestorProfile saveInvestorProfile(InvestorProfile profile);
-}
+//     InvestorProfile saveInvestorProfile(InvestorProfile profile);
+// }
