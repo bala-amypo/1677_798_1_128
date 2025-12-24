@@ -18,21 +18,18 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
 
     @Override
     public HoldingRecord recordHolding(HoldingRecord holding) {
-        if (holding.getCurrentValue() <= 0) {
-            throw new RuntimeException("must be > 0");
-        }
         return repository.save(holding);
-    }
-
-    @Override
-    public List<HoldingRecord> getHoldingsByInvestor(Long investorId) {
-        return repository.findByInvestorId(investorId);
     }
 
     @Override
     public HoldingRecord getHoldingById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("not found"));
+                .orElseThrow(() -> new RuntimeException("Holding not found"));
+    }
+
+    @Override
+    public List<HoldingRecord> getHoldingsByInvestor(Long investorId) {
+        return repository.findByInvestorId(investorId);
     }
 
     @Override

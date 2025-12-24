@@ -7,4 +7,6 @@ public interface UserAccountService {
     UserAccount register(UserAccount user);
 
     UserAccount login(String username, String password);
+
+    UserAccount getByUsername(String username);
 }

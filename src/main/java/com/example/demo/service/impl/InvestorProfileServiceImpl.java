@@ -24,13 +24,13 @@ public class InvestorProfileServiceImpl implements InvestorProfileService {
     @Override
     public InvestorProfile getInvestorById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("not found"));
+                .orElseThrow(() -> new RuntimeException("Investor not found"));
     }
 
     @Override
     public InvestorProfile findByInvestorId(String investorId) {
         return repository.findByInvestorId(investorId)
-                .orElseThrow(() -> new RuntimeException("not found"));
+                .orElseThrow(() -> new RuntimeException("Investor not found"));
     }
 
     @Override

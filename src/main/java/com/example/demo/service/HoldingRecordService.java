@@ -7,9 +7,9 @@ public interface HoldingRecordService {
 
     HoldingRecord recordHolding(HoldingRecord holding);
 
-    List<HoldingRecord> getHoldingsByInvestor(Long investorId);
-
     HoldingRecord getHoldingById(Long id);
+
+    List<HoldingRecord> getHoldingsByInvestor(Long investorId);
 
     List<HoldingRecord> getAllHoldings();
 }

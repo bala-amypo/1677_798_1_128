@@ -10,26 +10,35 @@ import org.springframework.stereotype.Service;
 public class UserAccountServiceImpl implements UserAccountService {
 
     private final UserAccountRepository repository;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public UserAccountServiceImpl(UserAccountRepository repository) {
         this.repository = repository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
     @Override
     public UserAccount register(UserAccount user) {
-        user.setPassword(encoder.encode(user.getPassword()));
+        // encrypt password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return repository.save(user);
     }
 
     @Override
     public UserAccount login(String username, String password) {
         UserAccount user = repository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("not found"));
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!encoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("not found");
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
         }
+
         return user;
+    }
+
+    @Override
+    public UserAccount getByUsername(String username) {
+        return repository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
