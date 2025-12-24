@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.UserAccount;
-import com.example.demo.security.JwtUtil;
+import com.example.demo.config.JwtUtil;
 import com.example.demo.service.UserAccountService;
 import org.springframework.web.bind.annotation.*;
 
