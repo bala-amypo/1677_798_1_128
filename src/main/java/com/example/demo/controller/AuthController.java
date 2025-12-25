@@ -3,10 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.entity.UserAccount;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.security.JwtUtil;
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
 import org.springframework.security.authentication.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -31,9 +32,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody Map<String, String> req) {
-        authManager.authenticate(new UsernamePasswordAuthenticationToken(req.get("username"), req.get("password")));
-        String token = jwtUtil.generateToken(req.get("username"));
-        return Map.of("token", token);
+    public AuthResponse login(@RequestBody AuthRequest req) {
+        // This validates the credentials against the database
+        authManager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
+        
+        // Generate the token if authentication is successful
+        String token = jwtUtil.generateToken(req.getUsername());
+        return new AuthResponse(token);
     }
 }
