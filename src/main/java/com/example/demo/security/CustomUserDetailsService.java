@@ -20,7 +20,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserAccount user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        // FIX: Add "ROLE_" prefix to the enum value (e.g., ADMIN becomes ROLE_ADMIN)
         return new User(
             user.getUsername(), 
             user.getPassword(), 
