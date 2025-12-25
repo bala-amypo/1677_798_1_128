@@ -7,8 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -17,15 +15,9 @@ public class SecurityConfig {
 
     @Bean
     public JwtUtil jwtUtil() {
-        // Use a 32+ character alphanumeric string (no hyphens)
-        String secret = "SecretKeyForPortfolioManagementSystem2025GeneratedByGemini";
-        long validityInMs = 3600000; 
-        return new JwtUtil(secret, validityInMs);
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        // 64-character alphanumeric key (Safe for HS256)
+        String secret = "v9yB8nL2pQ5rT7xW9zA2cE4fG6hJ8kM1nP3rS5uV7xY0zB2dG4iK6mN8pR0tV2xZ";
+        return new JwtUtil(secret, 3600000);
     }
 
     @Bean
@@ -42,7 +34,6 @@ public class SecurityConfig {
                 .requestMatchers("/api/**").authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-        
         return http.build();
     }
 }
