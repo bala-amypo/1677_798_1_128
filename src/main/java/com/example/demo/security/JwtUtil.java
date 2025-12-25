@@ -18,13 +18,14 @@ public class JwtUtil {
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + validityInMs))
-                // USE .getBytes() to avoid Base64 decoding issues
+                // FIX: Use .getBytes() to treat the secret as raw data
                 .signWith(SignatureAlgorithm.HS256, secret.getBytes(StandardCharsets.UTF_8))
                 .compact();
     }
 
     public String getUsernameFromToken(String token) {
         return Jwts.parser()
+                // FIX: Use .getBytes() here too
                 .setSigningKey(secret.getBytes(StandardCharsets.UTF_8))
                 .parseClaimsJws(token)
                 .getBody()
@@ -33,7 +34,9 @@ public class JwtUtil {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(secret.getBytes(StandardCharsets.UTF_8)).parseClaimsJws(token);
+            Jwts.parser()
+                .setSigningKey(secret.getBytes(StandardCharsets.UTF_8))
+                .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;

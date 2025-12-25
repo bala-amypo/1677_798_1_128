@@ -15,11 +15,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
-    // THIS SECTION FIXES YOUR ERROR
+    /**
+     * Defines the JwtUtil bean.
+     * Use a plain alphanumeric string to avoid Base64 decoding errors (like illegal characters).
+     */
     @Bean
     public JwtUtil jwtUtil() {
-        // Use a 256-bit secret key for HS256 algorithm
-        String secret = "your-very-secure-and-long-secret-key-that-is-at-least-32-characters";
+        // Must be at least 32 characters for HS256
+        String secret = "YourSuperSecretAlphanumericKeyForInvestorPortfolio2025"; 
         long validityInMs = 3600000; // 1 hour
         return new JwtUtil(secret, validityInMs);
     }
@@ -39,9 +42,14 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                // Public endpoints
                 .requestMatchers("/auth/**", "/status", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                // Role-based protection for specific investor management
+                .requestMatchers("/api/investors/**").hasAnyRole("ADMIN", "ANALYST")
+                // All other /api/** endpoints require authentication
                 .requestMatchers("/api/**").authenticated()
             )
+            // Add our custom JWT filter before the standard authentication filter
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         
         return http.build();
