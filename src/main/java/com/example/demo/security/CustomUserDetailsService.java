@@ -19,7 +19,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserAccount user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new User(user.getUsername(), user.getPassword(), 
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name())));
+
+        // FIX: Add "ROLE_" prefix to the enum value (e.g., ADMIN becomes ROLE_ADMIN)
+        return new User(
+            user.getUsername(), 
+            user.getPassword(), 
+            Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+        );
     }
 }
