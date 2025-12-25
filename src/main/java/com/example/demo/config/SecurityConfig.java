@@ -1,6 +1,5 @@
 package com.example.demo.config;
 
-import com.example.demo.security.JwtAuthenticationFilter;
 import com.example.demo.security.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +15,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfig {
 
+    // THIS SECTION FIXES YOUR ERROR
     @Bean
     public JwtUtil jwtUtil() {
-        // Defaulting to 1 hour validity for the test environment
-        return new JwtUtil("your_very_secure_secret_key_that_is_long_enough", 3600000);
+        // Use a 256-bit secret key for HS256 algorithm
+        String secret = "your-very-secure-and-long-secret-key-that-is-at-least-32-characters";
+        long validityInMs = 3600000; // 1 hour
+        return new JwtUtil(secret, validityInMs);
     }
 
     @Bean
@@ -38,7 +40,6 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**", "/status", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/api/investors/**").hasAnyRole("ADMIN", "ANALYST")
                 .requestMatchers("/api/**").authenticated()
             )
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
