@@ -14,7 +14,6 @@ public class AllocationSnapshotServiceImpl implements AllocationSnapshotService 
     private final AssetClassAllocationRuleRepository ruleRepo;
     private final RebalancingAlertRecordRepository alertRepo;
 
-    // CONSTRUCTOR INJECTION - STRICT ORDER FOR TEST SUITE
     public AllocationSnapshotServiceImpl(
             AllocationSnapshotRecordRepository snapshotRepo,
             HoldingRecordRepository holdingRepo,
@@ -29,31 +28,30 @@ public class AllocationSnapshotServiceImpl implements AllocationSnapshotService 
     @Override
     public AllocationSnapshotRecord computeSnapshot(Long investorId) {
         List<HoldingRecord> holdings = holdingRepo.findByInvestorId(investorId);
-        if (holdings.isEmpty()) throw new RuntimeException("No holdings not found");
+        if (holdings.isEmpty()) throw new RuntimeException("not found");
 
-        double total = holdings.stream().mapToDouble(HoldingRecord::getCurrentValue).sum();
-        if (total <= 0) throw new RuntimeException("totalPortfolioValue must be > 0");
+        double totalValue = holdings.stream().mapToDouble(HoldingRecord::getCurrentValue).sum();
+        if (totalValue <= 0) throw new RuntimeException("must be > 0");
 
-        Map<String, Double> allocations = new HashMap<>();
         List<AssetClassAllocationRule> rules = ruleRepo.findActiveRulesHql(investorId);
+        Map<String, Double> allocations = new HashMap<>();
 
-        for (HoldingRecord h : holdings) {
-            double currentPct = (h.getCurrentValue() / total) * 100;
-            allocations.put(h.getAssetClass().name(), currentPct);
+        for (HoldingRecord holding : holdings) {
+            double currentPercentage = (holding.getCurrentValue() / totalValue) * 100;
+            allocations.put(holding.getAssetClass().name(), currentPercentage);
 
             rules.stream()
-                .filter(r -> r.getAssetClass() == h.getAssetClass())
+                .filter(r -> r.getAssetClass() == holding.getAssetClass())
                 .findFirst()
-                .ifPresent(r -> {
-                    if (currentPct > r.getTargetPercentage()) {
+                .ifPresent(rule -> {
+                    if (currentPercentage > rule.getTargetPercentage()) {
                         RebalancingAlertRecord alert = new RebalancingAlertRecord();
                         alert.setInvestorId(investorId);
-                        alert.setAssetClass(h.getAssetClass());
-                        alert.setCurrentPercentage(currentPct);
-                        alert.setTargetPercentage(r.getTargetPercentage());
+                        alert.setAssetClass(holding.getAssetClass());
+                        alert.setCurrentPercentage(currentPercentage);
+                        alert.setTargetPercentage(rule.getTargetPercentage());
                         alert.setSeverity(AlertSeverity.HIGH);
-                        alert.setMessage("currentPercentage > targetPercentage breach");
-                        alert.setResolved(false);
+                        alert.setMessage("currentPercentage > targetPercentage breach detected");
                         alertRepo.save(alert);
                     }
                 });
@@ -61,11 +59,13 @@ public class AllocationSnapshotServiceImpl implements AllocationSnapshotService 
 
         AllocationSnapshotRecord snapshot = new AllocationSnapshotRecord();
         snapshot.setInvestorId(investorId);
-        snapshot.setTotalPortfolioValue(total);
+        snapshot.setTotalPortfolioValue(totalValue);
         snapshot.setAllocationJson(allocations.toString());
         return snapshotRepo.save(snapshot);
     }
 
-    @Override public Optional<AllocationSnapshotRecord> getSnapshotById(Long id) { return snapshotRepo.findById(id); }
-    @Override public List<AllocationSnapshotRecord> getAllSnapshots() { return snapshotRepo.findAll(); }
+    @Override
+    public List<AllocationSnapshotRecord> getAllSnapshots() {
+        return snapshotRepo.findAll();
+    }
 }

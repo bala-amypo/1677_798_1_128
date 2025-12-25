@@ -1,11 +1,10 @@
 package com.example.demo.security;
-
 import io.jsonwebtoken.*;
 import java.util.Date;
 
 public class JwtUtil {
-    private String secret;
-    private long validityInMs;
+    private final String secret;
+    private final long validityInMs;
 
     public JwtUtil(String secret, long validityInMs) {
         this.secret = secret;
@@ -23,14 +22,5 @@ public class JwtUtil {
 
     public String getUsernameFromToken(String token) {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    public boolean validateToken(String token) {
-        try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 }
