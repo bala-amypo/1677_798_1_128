@@ -1,12 +1,26 @@
+// src/main/java/com/example/demo/repository/AssetClassAllocationRuleRepository.java
 package com.example.demo.repository;
+
 import com.example.demo.entity.AssetClassAllocationRule;
+import com.example.demo.entity.enums.AssetClassType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
 import java.util.List;
 
-public interface AssetClassAllocationRuleRepository extends JpaRepository<AssetClassAllocationRule, Long> {
-    @Query("SELECT r FROM AssetClassAllocationRule r WHERE r.investorId = ?1 AND r.active = true")
-    List<AssetClassAllocationRule> findActiveRulesHql(Long investorId);
+public interface AssetClassAllocationRuleRepository
+        extends JpaRepository<AssetClassAllocationRule, Long> {
+
     List<AssetClassAllocationRule> findByInvestorId(Long investorId);
+
+    @Query("select r from AssetClassAllocationRule r " +
+           "where r.investorId = :investorId and r.active = true")
     List<AssetClassAllocationRule> findByInvestorIdAndActiveTrue(Long investorId);
+
+    @Query("select r from AssetClassAllocationRule r " +
+           "where r.investorId = :investorId and r.active = true")
+    List<AssetClassAllocationRule> findActiveRulesHql(Long investorId);
+
+    List<AssetClassAllocationRule> findByInvestorIdAndAssetClass(Long investorId,
+                                                                  AssetClassType assetClass);
 }
