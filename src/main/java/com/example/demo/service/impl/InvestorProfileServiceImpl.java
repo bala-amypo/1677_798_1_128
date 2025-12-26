@@ -7,16 +7,14 @@ import com.example.demo.service.InvestorProfileService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class InvestorProfileServiceImpl
-        implements InvestorProfileService {
+public class InvestorProfileServiceImpl implements InvestorProfileService {
 
     private final InvestorProfileRepository repository;
 
-    public InvestorProfileServiceImpl(
-            InvestorProfileRepository repository
-    ) {
+    public InvestorProfileServiceImpl(InvestorProfileRepository repository) {
         this.repository = repository;
     }
 
@@ -28,10 +26,9 @@ public class InvestorProfileServiceImpl
     @Override
     public InvestorProfile getInvestorById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Investor not found: " + id
-                        ));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Investor not found: " + id
+                ));
     }
 
     @Override
@@ -44,5 +41,10 @@ public class InvestorProfileServiceImpl
         InvestorProfile profile = getInvestorById(id);
         profile.setActive(active);
         return repository.save(profile);
+    }
+
+    // Added method to satisfy InvestmentSystemTest.java
+    public Optional<InvestorProfile> findByInvestorId(String investorId) {
+        return repository.findByInvestorId(investorId);
     }
 }

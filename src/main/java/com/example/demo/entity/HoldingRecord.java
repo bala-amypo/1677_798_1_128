@@ -1,8 +1,9 @@
 package com.example.demo.entity;
 
 import com.example.demo.entity.enums.AssetClassType;
+
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Positive;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "holding_records")
@@ -12,35 +13,39 @@ public class HoldingRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long investorId;
-
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private AssetClassType assetClass;
 
-    @Positive
-    @Column(nullable = false)
-    private double value;
+    private double currentValue;
 
+    private LocalDateTime timestamp;
+
+    // Default constructor
     public HoldingRecord() {}
 
-    public HoldingRecord(Long investorId, AssetClassType assetClass, double value) {
-        this.investorId = investorId;
+    // Existing constructor
+    public HoldingRecord(Long id, AssetClassType assetClass, double currentValue) {
+        this.id = id;
         this.assetClass = assetClass;
-        this.value = value;
+        this.currentValue = currentValue;
+        this.timestamp = LocalDateTime.now();
     }
 
+    // New constructor to satisfy tests
+    public HoldingRecord(Long id, AssetClassType assetClass, double currentValue, LocalDateTime timestamp) {
+        this.id = id;
+        this.assetClass = assetClass;
+        this.currentValue = currentValue;
+        this.timestamp = timestamp;
+    }
+
+    // Getters & setters
     public Long getId() {
         return id;
     }
 
-    public Long getInvestorId() {
-        return investorId;
-    }
-
-    public void setInvestorId(Long investorId) {
-        this.investorId = investorId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public AssetClassType getAssetClass() {
@@ -51,11 +56,19 @@ public class HoldingRecord {
         this.assetClass = assetClass;
     }
 
-    public double getValue() {
-        return value;
+    public double getCurrentValue() {
+        return currentValue;
     }
 
-    public void setValue(double value) {
-        this.value = value;
+    public void setCurrentValue(double currentValue) {
+        this.currentValue = currentValue;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

@@ -5,10 +5,11 @@ import com.example.demo.entity.enums.AssetClassType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface HoldingRecordRepository extends JpaRepository<HoldingRecord, Long> {
 
-    List<HoldingRecord> findByInvestorId(Long investorId);
+    List<HoldingRecord> findByValueGreaterThan(double value);
 
-    List<HoldingRecord> findByInvestorIdAndAssetClass(Long investorId, AssetClassType assetClass);
+    Optional<HoldingRecord> findByInvestorAndAssetClass(long investorId, AssetClassType assetClass);
 }
