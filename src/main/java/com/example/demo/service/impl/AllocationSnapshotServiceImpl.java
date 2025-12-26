@@ -1,11 +1,11 @@
 package com.example.demo.service.impl;
-
 import com.example.demo.entity.*;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.*;
+import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
-import org.springframework.stereotype.Service;
+
 @Service
 public class AllocationSnapshotServiceImpl {
     private final AllocationSnapshotRecordRepository snapshotRepo;
@@ -21,17 +21,13 @@ public class AllocationSnapshotServiceImpl {
     public AllocationSnapshotRecord computeSnapshot(Long investorId) {
         List<HoldingRecord> holdings = holdingRepo.findByInvestorId(investorId);
         if (holdings.isEmpty()) throw new IllegalArgumentException("No holdings for investor");
-
-        // Fixed the invalid method reference error by using a lambda
-        double total = holdings.stream().mapToDouble(h -> h.getCurrentValue()).sum();
-        
+        double total = holdings.stream().mapToDouble(HoldingRecord::getCurrentValue).sum();
         AllocationSnapshotRecord snap = new AllocationSnapshotRecord(investorId, LocalDateTime.now(), total, "{}");
         return snapshotRepo.save(snap);
     }
 
     public AllocationSnapshotRecord getSnapshotById(Long id) {
-        return snapshotRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Snapshot " + id));
+        return snapshotRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("ID: " + id));
     }
-    
     public List<AllocationSnapshotRecord> getAllSnapshots() { return snapshotRepo.findAll(); }
 }
