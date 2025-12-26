@@ -1,58 +1,50 @@
+// src/main/java/com/example/demo/config/JwtTokenProvider.java
 package com.example.demo.config;
 
 import com.example.demo.entity.UserAccount;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.Authentication;
+
+import java.security.Key;
 import java.util.Date;
-import javax.crypto.SecretKey;
 
 public class JwtTokenProvider {
 
-    private final SecretKey key;
-    private final long validityInMilliseconds;
+    private final Key key;
+    private final long validityInMs;
 
-    public JwtTokenProvider(String secret, long validityInMilliseconds) {
-        // Ensure the secret is long enough for HMAC-SHA
+    public JwtTokenProvider(String secret, long validityInMs) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.validityInMilliseconds = validityInMilliseconds;
+        this.validityInMs = validityInMs;
     }
 
-    // Fixes Error 1: generateToken
-    public String generateToken(Authentication authentication, UserAccount user) {
-        String username = authentication.getName();
+    public String generateToken(org.springframework.security.core.Authentication authentication,
+                                UserAccount user) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + validityInMilliseconds);
+        Date expiry = new Date(now.getTime() + validityInMs);
 
         return Jwts.builder()
-                .setSubject(username)
-                .claim("role", user.getRole().name())
+                .setSubject(authentication.getName())
+                .claim("userId", user.getId())
                 .setIssuedAt(now)
-                .setExpiration(expiryDate)
+                .setExpiration(expiry)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Fixes Error 2: validateToken
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
+        } catch (JwtException | IllegalArgumentException ex) {
             return false;
         }
     }
 
-    // Fixes Error 3: getUsernameFromToken
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
+                .setSigningKey(key).build()
+                .parseClaimsJws(token).getBody();
         return claims.getSubject();
     }
 }
