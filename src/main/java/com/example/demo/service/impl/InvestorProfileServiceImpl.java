@@ -3,47 +3,36 @@ package com.example.demo.service.impl;
 import com.example.demo.entity.InvestorProfile;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.InvestorProfileRepository;
-import com.example.demo.service.InvestorProfileService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class InvestorProfileServiceImpl implements InvestorProfileService {
-
+@RequiredArgsConstructor
+public class InvestorProfileServiceImpl {
     private final InvestorProfileRepository repository;
 
-    public InvestorProfileServiceImpl(InvestorProfileRepository repository) {
-        this.repository = repository;
+    public InvestorProfile createInvestor(InvestorProfile investor) {
+        return repository.save(investor);
     }
 
-    @Override
-    public InvestorProfile createInvestor(InvestorProfile profile) {
-        return repository.save(profile);
-    }
-
-    @Override
     public InvestorProfile getInvestorById(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Investor not found: " + id
-                ));
+                .orElseThrow(() -> new ResourceNotFoundException("Investor not found with id: " + id));
     }
 
-    @Override
     public List<InvestorProfile> getAllInvestors() {
         return repository.findAll();
     }
 
-    @Override
-    public InvestorProfile updateInvestorStatus(Long id, boolean active) {
-        InvestorProfile profile = getInvestorById(id);
-        profile.setActive(active);
-        return repository.save(profile);
+    public InvestorProfile updateInvestorStatus(Long id, Boolean status) {
+        InvestorProfile investor = getInvestorById(id);
+        investor.setActive(status);
+        return repository.save(investor);
     }
 
-    // Added method to satisfy InvestmentSystemTest.java
     public Optional<InvestorProfile> findByInvestorId(String investorId) {
         return repository.findByInvestorId(investorId);
     }

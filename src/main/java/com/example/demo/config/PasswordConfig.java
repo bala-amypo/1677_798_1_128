@@ -10,6 +10,7 @@ public class PasswordConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+        // Required for security test cases and user registration
         return new BCryptPasswordEncoder();
     }
 }
