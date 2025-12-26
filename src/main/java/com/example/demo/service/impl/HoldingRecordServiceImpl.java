@@ -29,8 +29,9 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
         return holdingRecordRepository.findByInvestorId(investorId);
     }
 
+    // MATCHES INTERFACE METHOD NAME
     @Override
-    public List<HoldingRecord> getHoldingsByInvestorAndAssetClass(Long investorId, AssetClassType assetClass) {
+    public List<HoldingRecord> getByInvestorAndAssetClass(Long investorId, AssetClassType assetClass) {
         return holdingRecordRepository.findByInvestorIdAndAssetClass(investorId, assetClass);
     }
 
