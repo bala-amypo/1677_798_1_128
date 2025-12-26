@@ -11,6 +11,7 @@ import java.util.Optional;
 
 @Service
 public class InvestorProfileServiceImpl implements InvestorProfileService {
+
     private final InvestorProfileRepository repo;
 
     public InvestorProfileServiceImpl(InvestorProfileRepository repo) {
@@ -24,7 +25,8 @@ public class InvestorProfileServiceImpl implements InvestorProfileService {
 
     @Override
     public InvestorProfile getInvestorById(Long id) {
-        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Investor not found: " + id));
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Investor not found: " + id));
     }
 
     @Override
@@ -38,9 +40,9 @@ public class InvestorProfileServiceImpl implements InvestorProfileService {
     }
 
     @Override
-public InvestorProfile updateInvestorStatus(Long id, boolean active) { // Changed Boolean to boolean to match interface
-    InvestorProfile investor = getInvestorById(id);
-    investor.setActive(active);
-    return repo.save(investor);
-}
+    public InvestorProfile updateInvestorStatus(Long id, boolean active) {
+        InvestorProfile investor = getInvestorById(id);
+        investor.setActive(active);
+        return repo.save(investor);
+    }
 }
