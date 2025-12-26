@@ -3,16 +3,15 @@ import com.example.demo.entity.InvestorProfile;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.InvestorProfileRepository;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
-@Service // MUST HAVE THIS
+@Service
 public class InvestorProfileServiceImpl {
     private final InvestorProfileRepository repository;
     public InvestorProfileServiceImpl(InvestorProfileRepository repository) { this.repository = repository; }
     public InvestorProfile createInvestor(InvestorProfile inv) { return repository.save(inv); }
     public InvestorProfile getInvestorById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Investor " + id));
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Investor not found: " + id));
     }
     public List<InvestorProfile> getAllInvestors() { return repository.findAll(); }
     public InvestorProfile updateInvestorStatus(Long id, Boolean status) {
