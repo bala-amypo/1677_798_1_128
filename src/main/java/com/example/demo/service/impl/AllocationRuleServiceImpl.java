@@ -38,6 +38,12 @@ public class AllocationRuleServiceImpl implements AllocationRuleService {
     @Override
     public AssetClassAllocationRule getRuleById(Long id) {
         return repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Rule not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
+    }
+
+    // Fixes the missing method error
+    @Override
+    public List<AssetClassAllocationRule> getActiveRules(Long investorId) {
+        return repo.findByInvestorIdAndActiveTrue(investorId);
     }
 }

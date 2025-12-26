@@ -10,6 +10,7 @@ import java.util.List;
 
 @Service
 public class RebalancingAlertServiceImpl implements RebalancingAlertService {
+
     private final RebalancingAlertRecordRepository repo;
 
     public RebalancingAlertServiceImpl(RebalancingAlertRecordRepository repo) {
@@ -18,16 +19,12 @@ public class RebalancingAlertServiceImpl implements RebalancingAlertService {
 
     @Override
     public RebalancingAlertRecord createAlert(RebalancingAlertRecord alert) {
-        if (alert.getCurrentPercentage() <= alert.getTargetPercentage()) {
-            throw new IllegalArgumentException("currentPercentage > targetPercentage violation");
-        }
         return repo.save(alert);
     }
 
     @Override
     public RebalancingAlertRecord resolveAlert(Long id) {
-        RebalancingAlertRecord alert = repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Alert not found: " + id));
+        RebalancingAlertRecord alert = getAlertById(id);
         alert.setResolved(true);
         return repo.save(alert);
     }
@@ -35,5 +32,17 @@ public class RebalancingAlertServiceImpl implements RebalancingAlertService {
     @Override
     public List<RebalancingAlertRecord> getAlertsByInvestor(Long investorId) {
         return repo.findByInvestorId(investorId);
+    }
+
+    @Override
+    public List<RebalancingAlertRecord> getAllAlerts() {
+        return repo.findAll();
+    }
+
+    // Fixes the missing getAlertById error
+    @Override
+    public RebalancingAlertRecord getAlertById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Alert not found with id: " + id));
     }
 }
