@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
-@Service
+@Service // CRITICAL: This allows SecurityConfig to find this bean
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserAccountRepository userAccountRepository;
@@ -25,7 +25,6 @@ public class CustomUserDetailsService implements UserDetailsService {
         UserAccount user = userAccountRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-        // Mapping RoleType to Spring Security Authority (Priority 58-60)
         return new User(
                 user.getUsername(),
                 user.getPassword(),
