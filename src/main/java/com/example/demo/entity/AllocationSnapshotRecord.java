@@ -1,14 +1,78 @@
+// src/main/java/com/example/demo/entity/AllocationSnapshotRecord.java
 package com.example.demo.entity;
+
 import jakarta.persistence.*;
-import lombok.*;
+
 import java.time.LocalDateTime;
 
-@Entity @Data @NoArgsConstructor @AllArgsConstructor
+@Entity
 public class AllocationSnapshotRecord {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
     private Long investorId;
-    private LocalDateTime snapshotDate = LocalDateTime.now();
+
+    @Column(nullable = false)
+    private LocalDateTime snapshotDate;
+
+    @Column(nullable = false)
     private Double totalPortfolioValue;
-    @Column(columnDefinition = "TEXT") private String allocationJson;
+
+    @Lob
+    @Column(nullable = false)
+    private String allocationJson;
+
+    public AllocationSnapshotRecord() {
+    }
+
+    public AllocationSnapshotRecord(Long investorId, LocalDateTime snapshotDate,
+                                    Double totalPortfolioValue, String allocationJson) {
+        this.investorId = investorId;
+        this.snapshotDate = snapshotDate;
+        this.totalPortfolioValue = totalPortfolioValue;
+        this.allocationJson = allocationJson;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getInvestorId() {
+        return investorId;
+    }
+
+    public void setInvestorId(Long investorId) {
+        this.investorId = investorId;
+    }
+
+    public LocalDateTime getSnapshotDate() {
+        return snapshotDate;
+    }
+
+    public void setSnapshotDate(LocalDateTime snapshotDate) {
+        this.snapshotDate = snapshotDate;
+    }
+
+    public Double getTotalPortfolioValue() {
+        return totalPortfolioValue;
+    }
+
+    public void setTotalPortfolioValue(Double totalPortfolioValue) {
+        this.totalPortfolioValue = totalPortfolioValue;
+    }
+
+    public String getAllocationJson() {
+        return allocationJson;
+    }
+
+    public void setAllocationJson(String allocationJson) {
+        this.allocationJson = allocationJson;
+    }
 }
