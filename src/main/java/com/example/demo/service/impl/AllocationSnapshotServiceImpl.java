@@ -38,22 +38,18 @@ public class AllocationSnapshotServiceImpl implements AllocationSnapshotService 
     public AllocationSnapshotRecord computeSnapshot(Long investorId) {
         List<HoldingRecord> holdings = holdRepo.findByInvestorId(investorId);
         if (holdings.isEmpty()) {
-            throw new IllegalArgumentException("No holdings found for investor: " + investorId);
+            throw new IllegalArgumentException("No holdings found");
         }
 
-        double totalValue = holdings.stream()
-                .mapToDouble(HoldingRecord::getCurrentValue)
-                .sum();
-
+        double totalValue = holdings.stream().mapToDouble(HoldingRecord::getCurrentValue).sum();
         List<AssetClassAllocationRule> rules = ruleRepo.findByInvestorIdAndActiveTrue(investorId);
 
         for (AssetClassAllocationRule rule : rules) {
             double currentAssetValue = holdings.stream()
                     .filter(h -> h.getAssetClass() == rule.getAssetClass())
-                    .mapToDouble(HoldingRecord::getCurrentValue)
-                    .sum();
+                    .mapToDouble(HoldingRecord::getCurrentValue).sum();
             
-            double currentPct = (currentAssetValue / totalValue) * 100;
+            double currentPct = (totalValue > 0) ? (currentAssetValue / totalValue) * 100 : 0;
 
             if (currentPct > rule.getTargetPercentage()) {
                 RebalancingAlertRecord alert = new RebalancingAlertRecord(
@@ -64,16 +60,14 @@ public class AllocationSnapshotServiceImpl implements AllocationSnapshotService 
             }
         }
 
-        AllocationSnapshotRecord snap = new AllocationSnapshotRecord(
-            null, investorId, LocalDateTime.now(), totalValue, "{}"
-        );
+        AllocationSnapshotRecord snap = new AllocationSnapshotRecord(null, investorId, LocalDateTime.now(), totalValue, "{}");
         return snapRepo.save(snap);
     }
 
     @Override
     public AllocationSnapshotRecord getSnapshotById(Long id) {
         return snapRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Snapshot not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Not found: " + id));
     }
 
     @Override
