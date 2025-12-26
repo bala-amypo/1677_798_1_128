@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.entity.InvestorProfile;
-import com.example.demo.service.InvestorProfileService;
+import com.example.demo.service.impl.InvestorProfileServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,13 +10,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/investors")
+@RequiredArgsConstructor
 public class InvestorProfileController {
-
-    private final InvestorProfileService investorProfileService;
-
-    public InvestorProfileController(InvestorProfileService investorProfileService) {
-        this.investorProfileService = investorProfileService;
-    }
+    private final InvestorProfileServiceImpl investorProfileService;
 
     @PostMapping
     public ResponseEntity<InvestorProfile> create(@RequestBody InvestorProfile investor) {
@@ -32,13 +29,8 @@ public class InvestorProfileController {
         return ResponseEntity.ok(investorProfileService.getAllInvestors());
     }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<InvestorProfile> updateStatus(
-            @PathVariable Long id,
-            @RequestParam boolean active
-    ) {
-        return ResponseEntity.ok(
-                investorProfileService.updateInvestorStatus(id, active)
-        );
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<InvestorProfile> updateStatus(@PathVariable Long id, @RequestParam Boolean active) {
+        return ResponseEntity.ok(investorProfileService.updateInvestorStatus(id, active));
     }
 }
