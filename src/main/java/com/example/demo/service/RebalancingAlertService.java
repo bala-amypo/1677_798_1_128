@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface RebalancingAlertService {
 
-    RebalancingAlertRecord save(RebalancingAlertRecord alert);
+    RebalancingAlertRecord createAlert(RebalancingAlertRecord alert);
 
-    List<RebalancingAlertRecord> findByInvestor(Long investorId);
+    RebalancingAlertRecord resolveAlert(Long id);
+
+    List<RebalancingAlertRecord> getAlertsByInvestor(Long investorId);
 }

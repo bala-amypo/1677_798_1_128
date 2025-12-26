@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.RebalancingAlertRecord;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.RebalancingAlertRecordRepository;
 import com.example.demo.service.RebalancingAlertService;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,23 @@ public class RebalancingAlertServiceImpl
     }
 
     @Override
-    public RebalancingAlertRecord save(RebalancingAlertRecord alert) {
+    public RebalancingAlertRecord createAlert(RebalancingAlertRecord alert) {
         return repository.save(alert);
     }
 
     @Override
-    public List<RebalancingAlertRecord> findByInvestor(Long investorId) {
+    public RebalancingAlertRecord resolveAlert(Long id) {
+        RebalancingAlertRecord alert = repository.findById(id)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Alert not found: " + id
+                        ));
+        alert.setResolved(true);
+        return repository.save(alert);
+    }
+
+    @Override
+    public List<RebalancingAlertRecord> getAlertsByInvestor(Long investorId) {
         return repository.findByInvestorId(investorId);
     }
 }

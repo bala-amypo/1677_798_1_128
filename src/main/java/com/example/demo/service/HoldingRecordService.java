@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface HoldingRecordService {
 
-    HoldingRecord save(HoldingRecord record);
+    HoldingRecord recordHolding(HoldingRecord record);
 
-    List<HoldingRecord> findByInvestor(Long investorId);
+    List<HoldingRecord> getHoldingsByInvestor(Long investorId);
+
+    HoldingRecord getHoldingById(Long id);
 }
