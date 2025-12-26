@@ -6,16 +6,27 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface HoldingRecordRepository extends JpaRepository<HoldingRecord, Long> {
 
-    // Get all holdings for a specific investor
+    // Old name for compatibility with tests
+    default List<HoldingRecord> findByValueGreaterThan(double value) {
+        return findByCurrentValueGreaterThan(value);
+    }
+
+    // Old name for compatibility with tests
+    default List<HoldingRecord> findByInvestorAndAssetClass(long investorId, AssetClassType assetClass) {
+        return findByInvestorIdAndAssetClass(investorId, assetClass);
+    }
+
+    // Actual methods
     List<HoldingRecord> findByInvestorId(Long investorId);
 
-    // Get all holdings for a specific investor filtered by asset class
     List<HoldingRecord> findByInvestorIdAndAssetClass(Long investorId, AssetClassType assetClass);
 
-    // Get all holdings with current value greater than a threshold
     List<HoldingRecord> findByCurrentValueGreaterThan(double value);
+
+    Optional<HoldingRecord> findById(Long id);
 }
