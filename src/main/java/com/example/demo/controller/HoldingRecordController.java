@@ -18,23 +18,21 @@ public class HoldingRecordController {
     }
 
     @PostMapping
-    public ResponseEntity<HoldingRecord> create(@RequestBody HoldingRecord record) {
-        return ResponseEntity.ok(holdingRecordService.recordHolding(record));
+    public ResponseEntity<HoldingRecord> recordHolding(@RequestBody HoldingRecord holdingRecord) {
+        return ResponseEntity.ok(holdingRecordService.recordHolding(holdingRecord));
     }
 
     @GetMapping("/investor/{investorId}")
-    public ResponseEntity<List<HoldingRecord>> getByInvestor(
-            @PathVariable Long investorId
-    ) {
+    public ResponseEntity<List<HoldingRecord>> getHoldingsByInvestor(@PathVariable Long investorId) {
         return ResponseEntity.ok(
                 holdingRecordService.getHoldingsByInvestor(investorId)
         );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<HoldingRecord> getById(@PathVariable Long id) {
-        return holdingRecordService.getHoldingById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<HoldingRecord> getHoldingById(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                holdingRecordService.getHoldingById(id)
+        );
     }
 }
