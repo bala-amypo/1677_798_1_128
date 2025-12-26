@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/entity/AllocationSnapshotRecord.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
@@ -6,6 +5,12 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(
+    name = "allocation_snapshots",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"investorId", "snapshotDate"})
+    }
+)
 public class AllocationSnapshotRecord {
 
     @Id
@@ -25,54 +30,32 @@ public class AllocationSnapshotRecord {
     @Column(nullable = false)
     private String allocationJson;
 
-    public AllocationSnapshotRecord() {
-    }
+    public AllocationSnapshotRecord() {}
 
-    public AllocationSnapshotRecord(Long investorId, LocalDateTime snapshotDate,
-                                    Double totalPortfolioValue, String allocationJson) {
+    public AllocationSnapshotRecord(
+            Long investorId,
+            LocalDateTime snapshotDate,
+            Double totalPortfolioValue,
+            String allocationJson
+    ) {
         this.investorId = investorId;
         this.snapshotDate = snapshotDate;
         this.totalPortfolioValue = totalPortfolioValue;
         this.allocationJson = allocationJson;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getInvestorId() { return investorId; }
+    public void setInvestorId(Long investorId) { this.investorId = investorId; }
 
-    public Long getInvestorId() {
-        return investorId;
-    }
+    public LocalDateTime getSnapshotDate() { return snapshotDate; }
+    public void setSnapshotDate(LocalDateTime snapshotDate) { this.snapshotDate = snapshotDate; }
 
-    public void setInvestorId(Long investorId) {
-        this.investorId = investorId;
-    }
+    public Double getTotalPortfolioValue() { return totalPortfolioValue; }
+    public void setTotalPortfolioValue(Double totalPortfolioValue) { this.totalPortfolioValue = totalPortfolioValue; }
 
-    public LocalDateTime getSnapshotDate() {
-        return snapshotDate;
-    }
-
-    public void setSnapshotDate(LocalDateTime snapshotDate) {
-        this.snapshotDate = snapshotDate;
-    }
-
-    public Double getTotalPortfolioValue() {
-        return totalPortfolioValue;
-    }
-
-    public void setTotalPortfolioValue(Double totalPortfolioValue) {
-        this.totalPortfolioValue = totalPortfolioValue;
-    }
-
-    public String getAllocationJson() {
-        return allocationJson;
-    }
-
-    public void setAllocationJson(String allocationJson) {
-        this.allocationJson = allocationJson;
-    }
+    public String getAllocationJson() { return allocationJson; }
+    public void setAllocationJson(String allocationJson) { this.allocationJson = allocationJson; }
 }
