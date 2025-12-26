@@ -30,33 +30,35 @@ public class AllocationSnapshotServiceImpl implements AllocationSnapshotService 
     @Override
     public AllocationSnapshotRecord computeSnapshot(Long investorId) {
         List<HoldingRecord> holdings = holdRepo.findByInvestorId(investorId);
-        if (holdings.isEmpty()) throw new IllegalArgumentException("No holdings");
+        if (holdings.isEmpty()) throw new IllegalArgumentException("No holdings found");
 
         double totalValue = holdings.stream().mapToDouble(HoldingRecord::getCurrentValue).sum();
-
         List<AssetClassAllocationRule> rules = ruleRepo.findByInvestorIdAndActiveTrue(investorId);
+
         for (AssetClassAllocationRule rule : rules) {
             double currentAssetValue = holdings.stream()
                     .filter(h -> h.getAssetClass() == rule.getAssetClass())
                     .mapToDouble(HoldingRecord::getCurrentValue).sum();
-            
             double currentPct = (currentAssetValue / totalValue) * 100;
 
             if (currentPct > rule.getTargetPercentage()) {
+                // Corrected to 9-argument constructor based on your error log
                 RebalancingAlertRecord alert = new RebalancingAlertRecord(
-                        investorId, rule.getAssetClass(), currentPct, rule.getTargetPercentage(),
-                        AlertSeverity.MEDIUM, "Threshold exceeded", LocalDateTime.now(), false);
+                    null, investorId, rule.getAssetClass(), currentPct, rule.getTargetPercentage(),
+                    AlertSeverity.MEDIUM, "Rebalancing required", LocalDateTime.now(), false
+                );
                 alertRepo.save(alert);
             }
         }
 
-        AllocationSnapshotRecord snap = new AllocationSnapshotRecord(investorId, LocalDateTime.now(), totalValue, "{}");
+        // Corrected to 5-argument constructor based on your error log
+        AllocationSnapshotRecord snap = new AllocationSnapshotRecord(null, investorId, LocalDateTime.now(), totalValue, "{}");
         return snapRepo.save(snap);
     }
 
     @Override
     public AllocationSnapshotRecord getSnapshotById(Long id) {
-        return snapRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Snapshot not found: " + id));
+        return snapRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Snapshot not found"));
     }
 
     @Override

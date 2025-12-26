@@ -38,9 +38,9 @@ public class InvestorProfileServiceImpl implements InvestorProfileService {
     }
 
     @Override
-    public InvestorProfile updateInvestorStatus(Long id, Boolean active) {
-        InvestorProfile investor = getInvestorById(id);
-        investor.setActive(active);
-        return repo.save(investor);
-    }
+public InvestorProfile updateInvestorStatus(Long id, boolean active) { // Changed Boolean to boolean to match interface
+    InvestorProfile investor = getInvestorById(id);
+    investor.setActive(active);
+    return repo.save(investor);
+}
 }
