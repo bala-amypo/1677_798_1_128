@@ -5,12 +5,10 @@ import com.example.demo.entity.enums.AssetClassType;
 import com.example.demo.repository.HoldingRecordRepository;
 import com.example.demo.service.HoldingRecordService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class HoldingRecordServiceImpl implements HoldingRecordService {
 
     private final HoldingRecordRepository holdingRecordRepository;
@@ -20,23 +18,24 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
     }
 
     @Override
-    public HoldingRecord recordHolding(HoldingRecord holdingRecord) {
-        return holdingRecordRepository.save(holdingRecord);
-    }
-
-    @Override
     public List<HoldingRecord> getHoldingsByInvestor(Long investorId) {
+        // Returns a List directly from repository
         return holdingRecordRepository.findByInvestorId(investorId);
     }
 
     @Override
-    public HoldingRecord getHoldingById(Long id) {
-        return holdingRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("HoldingRecord not found with id: " + id));
+    public List<HoldingRecord> getHoldingsByInvestorAndAssetClass(Long investorId, AssetClassType assetClass) {
+        // Returns a List directly from repository
+        return holdingRecordRepository.findByInvestorIdAndAssetClass(investorId, assetClass);
     }
 
     @Override
-    public List<HoldingRecord> getByInvestorAndAssetClass(Long investorId, AssetClassType assetClass) {
-        return holdingRecordRepository.findByInvestorIdAndAssetClass(investorId, assetClass);
+    public HoldingRecord createHolding(HoldingRecord holding) {
+        return holdingRecordRepository.save(holding);
+    }
+
+    @Override
+    public List<HoldingRecord> getHoldingsGreaterThan(double value) {
+        return holdingRecordRepository.findByCurrentValueGreaterThan(value);
     }
 }
