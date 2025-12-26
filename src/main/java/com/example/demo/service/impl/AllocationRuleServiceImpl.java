@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AssetClassAllocationRuleServiceImpl {
+public class AllocationRuleServiceImpl { // Renamed to match your test
     private final AssetClassAllocationRuleRepository repository;
 
     public AssetClassAllocationRule createRule(AssetClassAllocationRule rule) {
