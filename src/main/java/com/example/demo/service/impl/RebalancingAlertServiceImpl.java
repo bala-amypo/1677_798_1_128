@@ -38,4 +38,17 @@ public class RebalancingAlertServiceImpl implements RebalancingAlertService {
     public List<RebalancingAlertRecord> getAlertsByInvestor(Long investorId) {
         return repository.findByInvestorId(investorId);
     }
+
+    // NEW
+    @Override
+    public RebalancingAlertRecord getAlertById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Alert not found: " + id));
+    }
+
+    // NEW
+    @Override
+    public List<RebalancingAlertRecord> getAllAlerts() {
+        return repository.findAll();
+    }
 }

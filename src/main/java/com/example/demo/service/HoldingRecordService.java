@@ -10,4 +10,7 @@ public interface HoldingRecordService {
     HoldingRecord recordHolding(HoldingRecord record);
     List<HoldingRecord> getHoldingsByInvestor(Long investorId);
     Optional<HoldingRecord> getHoldingById(Long id);
+
+    // NEW: used by HoldingRecordController
+    List<HoldingRecord> getAllHoldings();
 }
