@@ -4,6 +4,8 @@ package com.example.demo.repository;
 import com.example.demo.entity.HoldingRecord;
 import com.example.demo.entity.enums.AssetClassType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -13,5 +15,11 @@ public interface HoldingRecordRepository extends JpaRepository<HoldingRecord, Lo
 
     List<HoldingRecord> findByValueGreaterThan(Double value);
 
-    List<HoldingRecord> findByInvestorAndAssetClass(Long investorId, AssetClassType assetClass);
+    List<HoldingRecord> findByInvestorIdAndAssetClass(Long investorId,
+                                                      AssetClassType assetClass);
+
+    @Query("select h from HoldingRecord h " +
+           "where h.investorId = :investorId and h.assetClass = :assetClass")
+    List<HoldingRecord> findByInvestorAndAssetClass(@Param("investorId") Long investorId,
+                                                    @Param("assetClass") AssetClassType assetClass);
 }
