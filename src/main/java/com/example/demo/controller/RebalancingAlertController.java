@@ -1,7 +1,8 @@
+// src/main/java/com/example/demo/controller/RebalancingAlertController.java
 package com.example.demo.controller;
 
 import com.example.demo.entity.RebalancingAlertRecord;
-import com.example.demo.service.impl.RebalancingAlertServiceImpl;
+import com.example.demo.service.RebalancingAlertService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,26 +12,36 @@ import java.util.List;
 @RequestMapping("/api/alerts")
 public class RebalancingAlertController {
 
-    private final RebalancingAlertServiceImpl alertService;
+    private final RebalancingAlertService service;
 
-    public RebalancingAlertController(RebalancingAlertServiceImpl alertService) {
-        this.alertService = alertService;
+    public RebalancingAlertController(RebalancingAlertService service) {
+        this.service = service;
     }
 
     @PostMapping
-    public ResponseEntity<RebalancingAlertRecord> createAlert(@RequestBody RebalancingAlertRecord alert) {
-        // Validates currentPercentage > targetPercentage (Priority 33)
-        return ResponseEntity.ok(alertService.createAlert(alert));
+    public ResponseEntity<RebalancingAlertRecord> create(
+            @RequestBody RebalancingAlertRecord alert) {
+        return ResponseEntity.ok(service.createAlert(alert));
+    }
+
+    @PostMapping("/{id}/resolve")
+    public ResponseEntity<RebalancingAlertRecord> resolve(@PathVariable Long id) {
+        return ResponseEntity.ok(service.resolveAlert(id));
     }
 
     @GetMapping("/investor/{investorId}")
-    public ResponseEntity<List<RebalancingAlertRecord>> getAlertsByInvestor(@PathVariable Long investorId) {
-        return ResponseEntity.ok(alertService.getAlertsByInvestor(investorId));
+    public ResponseEntity<List<RebalancingAlertRecord>> byInvestor(
+            @PathVariable Long investorId) {
+        return ResponseEntity.ok(service.getAlertsByInvestor(investorId));
     }
 
-    @PutMapping("/{id}/resolve")
-    public ResponseEntity<RebalancingAlertRecord> resolveAlert(@PathVariable Long id) {
-        // Marks alert as resolved (Priority 34)
-        return ResponseEntity.ok(alertService.resolveAlert(id));
+    @GetMapping("/{id}")
+    public ResponseEntity<RebalancingAlertRecord> byId(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getAlertById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RebalancingAlertRecord>> all() {
+        return ResponseEntity.ok(service.getAllAlerts());
     }
 }
