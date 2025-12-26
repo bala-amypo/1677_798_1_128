@@ -2,6 +2,7 @@ package com.example.demo.service.impl;
 
 import com.example.demo.entity.HoldingRecord;
 import com.example.demo.entity.enums.AssetClassType;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.HoldingRecordRepository;
 import com.example.demo.service.HoldingRecordService;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,13 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
     }
 
     @Override
-    public List<HoldingRecord> getByInvestor(Long investorId) {
+    public HoldingRecord getHoldingById(Long id) {
+        return holdingRecordRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Holding not found: " + id));
+    }
+
+    @Override
+    public List<HoldingRecord> getHoldingsByInvestor(Long investorId) {
         return holdingRecordRepository.findByInvestorId(investorId);
     }
 
