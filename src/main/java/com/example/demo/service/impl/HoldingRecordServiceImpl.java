@@ -39,7 +39,7 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
         return holdingRecordRepository.save(holding);
     }
 
-    // Removed @Override since this is not in the interface
+    @Override
     public List<HoldingRecord> getHoldingsGreaterThan(double value) {
         return holdingRecordRepository.findByCurrentValueGreaterThan(value);
     }
