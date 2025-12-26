@@ -25,13 +25,24 @@ public class AllocationSnapshotServiceImpl implements AllocationSnapshotService 
     private final RebalancingAlertRecordRepository alertRepo;
 
     public AllocationSnapshotServiceImpl(AllocationSnapshotRecordRepository snapRepo,
-                                         HoldingRecordRepository holdRepo,
-                                         AssetClassAllocationRuleRepository ruleRepo,
-                                         RebalancingAlertRecordRepository alertRepo) {
+                                        HoldingRecordRepository holdRepo,
+                                        AssetClassAllocationRuleRepository ruleRepo,
+                                        RebalancingAlertRecordRepository alertRepo) {
         this.snapRepo = snapRepo;
         this.holdRepo = holdRepo;
         this.ruleRepo = ruleRepo;
         this.alertRepo = alertRepo;
+    }
+
+    @Override
+    public List<AllocationSnapshotRecord> getAllSnapshots() {
+        return snapRepo.findAll();
+    }
+
+    @Override
+    public AllocationSnapshotRecord getSnapshotById(Long id) {
+        return snapRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found: " + id));
     }
 
     @Override
@@ -52,26 +63,13 @@ public class AllocationSnapshotServiceImpl implements AllocationSnapshotService 
             double currentPct = (totalValue > 0) ? (currentAssetValue / totalValue) * 100 : 0;
 
             if (currentPct > rule.getTargetPercentage()) {
-                RebalancingAlertRecord alert = new RebalancingAlertRecord(
-                    null, investorId, rule.getAssetClass(), currentPct, rule.getTargetPercentage(),
-                    AlertSeverity.MEDIUM, "Threshold exceeded", LocalDateTime.now(), false
-                );
-                alertRepo.save(alert);
+                alertRepo.save(new RebalancingAlertRecord(
+                        null, investorId, rule.getAssetClass(), currentPct, rule.getTargetPercentage(),
+                        AlertSeverity.MEDIUM, "Rebalance needed", LocalDateTime.now(), false
+                ));
             }
         }
 
-        AllocationSnapshotRecord snap = new AllocationSnapshotRecord(null, investorId, LocalDateTime.now(), totalValue, "{}");
-        return snapRepo.save(snap);
-    }
-
-    @Override
-    public AllocationSnapshotRecord getSnapshotById(Long id) {
-        return snapRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found: " + id));
-    }
-
-    @Override
-    public List<AllocationSnapshotRecord> getAllSnapshots() {
-        return snapRepo.findAll();
+        return snapRepo.save(new AllocationSnapshotRecord(null, investorId, LocalDateTime.now(), totalValue, "{}"));
     }
 }
