@@ -2,8 +2,7 @@ package com.example.demo.entity;
 
 import com.example.demo.entity.enums.AssetClassType;
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
+import jakarta.validation.constraints.Positive;
 
 @Entity
 @Table(name = "holding_records")
@@ -20,38 +19,43 @@ public class HoldingRecord {
     @Column(nullable = false)
     private AssetClassType assetClass;
 
+    @Positive
     @Column(nullable = false)
-    private Double currentValue;
-
-    @Column(nullable = false)
-    private LocalDateTime recordedAt;
+    private double value;
 
     public HoldingRecord() {}
 
-    public HoldingRecord(
-            Long investorId,
-            AssetClassType assetClass,
-            Double currentValue,
-            LocalDateTime recordedAt
-    ) {
+    public HoldingRecord(Long investorId, AssetClassType assetClass, double value) {
         this.investorId = investorId;
         this.assetClass = assetClass;
-        this.currentValue = currentValue;
-        this.recordedAt = recordedAt;
+        this.value = value;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Long getInvestorId() { return investorId; }
-    public void setInvestorId(Long investorId) { this.investorId = investorId; }
+    public Long getInvestorId() {
+        return investorId;
+    }
 
-    public AssetClassType getAssetClass() { return assetClass; }
-    public void setAssetClass(AssetClassType assetClass) { this.assetClass = assetClass; }
+    public void setInvestorId(Long investorId) {
+        this.investorId = investorId;
+    }
 
-    public Double getCurrentValue() { return currentValue; }
-    public void setCurrentValue(Double currentValue) { this.currentValue = currentValue; }
+    public AssetClassType getAssetClass() {
+        return assetClass;
+    }
 
-    public LocalDateTime getRecordedAt() { return recordedAt; }
-    public void setRecordedAt(LocalDateTime recordedAt) { this.recordedAt = recordedAt; }
+    public void setAssetClass(AssetClassType assetClass) {
+        this.assetClass = assetClass;
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
 }
