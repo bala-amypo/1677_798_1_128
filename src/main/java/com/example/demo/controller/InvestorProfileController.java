@@ -1,0 +1,46 @@
+package com.example.demo.controller;
+
+import com.example.demo.entity.InvestorProfile;
+import com.example.demo.service.impl.InvestorProfileServiceImpl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/investors")
+public class InvestorProfileController {
+
+    private final InvestorProfileServiceImpl investorService;
+
+    public InvestorProfileController(InvestorProfileServiceImpl investorService) {
+        this.investorService = investorService;
+    }
+
+    @PostMapping
+    public ResponseEntity<InvestorProfile> createInvestor(@RequestBody InvestorProfile investor) {
+        return ResponseEntity.ok(investorService.createInvestor(investor));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<InvestorProfile> getInvestorById(@PathVariable Long id) {
+        return ResponseEntity.ok(investorService.getInvestorById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<InvestorProfile>> getAllInvestors() {
+        return ResponseEntity.ok(investorService.getAllInvestors());
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<InvestorProfile> updateStatus(@PathVariable Long id, @RequestParam Boolean active) {
+        return ResponseEntity.ok(investorService.updateInvestorStatus(id, active));
+    }
+
+    @GetMapping("/lookup")
+    public ResponseEntity<InvestorProfile> findByInvestorId(@RequestParam String investorId) {
+        return investorService.findByInvestorId(investorId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+}
