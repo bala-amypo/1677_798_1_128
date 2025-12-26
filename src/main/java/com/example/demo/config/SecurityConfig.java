@@ -6,7 +6,7 @@ import com.example.demo.security.JwtAuthenticationEntryPoint;
 import com.example.demo.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,27 +22,34 @@ public class SecurityConfig {
 
     private final JwtAuthenticationEntryPoint entryPoint;
     private final CustomUserDetailsService userDetailsService;
-    private final JwtTokenProvider tokenProvider;
 
     public SecurityConfig(JwtAuthenticationEntryPoint entryPoint,
-                          CustomUserDetailsService userDetailsService,
-                          JwtTokenProvider tokenProvider) {
+                          CustomUserDetailsService userDetailsService) {
         this.entryPoint = entryPoint;
         this.userDetailsService = userDetailsService;
-        this.tokenProvider = tokenProvider;
+    }
+
+    @Bean
+    public JwtTokenProvider jwtTokenProvider() {
+        String secret = "thisIsA32ByteMinimumSecureJwtTestKey!";
+        long validity = 3600000L;
+        return new JwtTokenProvider(secret, validity);
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         JwtAuthenticationFilter jwtFilter =
-                new JwtAuthenticationFilter(tokenProvider, userDetailsService);
+                new JwtAuthenticationFilter(jwtTokenProvider(), userDetailsService);
 
         http.csrf(csrf -> csrf.disable())
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(entryPoint))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/status", "/auth/**", "/v3/api-docs/**",
-                                         "/swagger-ui/**", "/swagger-ui.html")
+                        .requestMatchers("/status", "/auth/**",
+                                         "/v3/api-docs/**",
+                                         "/swagger-ui/**",
+                                         "/swagger-ui.html")
                         .permitAll()
                         .anyRequest().authenticated())
                 .userDetailsService(userDetailsService);
