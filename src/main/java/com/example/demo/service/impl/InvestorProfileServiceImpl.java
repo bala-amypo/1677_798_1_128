@@ -1,17 +1,46 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.entity.InvestorProfile;
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.repository.InvestorProfileRepository;
+import com.example.demo.service.InvestorProfileService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class InvestorProfileServiceImpl implements InvestorProfileService {
     private final InvestorProfileRepository repo;
-    public InvestorProfileServiceImpl(InvestorProfileRepository repo) { this.repo = repo; }
 
-    public InvestorProfile createInvestor(InvestorProfile inv) { return repo.save(inv); }
+    public InvestorProfileServiceImpl(InvestorProfileRepository repo) {
+        this.repo = repo;
+    }
+
+    @Override
+    public InvestorProfile createInvestor(InvestorProfile investor) {
+        return repo.save(investor);
+    }
+
+    @Override
     public InvestorProfile getInvestorById(Long id) {
         return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Investor not found: " + id));
     }
-    public List<InvestorProfile> getAllInvestors() { return repo.findAll(); }
-    public Optional<InvestorProfile> findByInvestorId(String iid) { return repo.findByInvestorId(iid); }
+
+    @Override
+    public List<InvestorProfile> getAllInvestors() {
+        return repo.findAll();
+    }
+
+    @Override
+    public Optional<InvestorProfile> findByInvestorId(String investorId) {
+        return repo.findByInvestorId(investorId);
+    }
+
+    @Override
     public InvestorProfile updateInvestorStatus(Long id, Boolean active) {
-        InvestorProfile inv = getInvestorById(id);
-        inv.setActive(active);
-        return repo.save(inv);
+        InvestorProfile investor = getInvestorById(id);
+        investor.setActive(active);
+        return repo.save(investor);
     }
 }
