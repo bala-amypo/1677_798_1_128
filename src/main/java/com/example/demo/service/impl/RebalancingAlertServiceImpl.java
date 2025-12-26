@@ -1,3 +1,4 @@
+// src/main/java/com/example/demo/service/impl/RebalancingAlertServiceImpl.java
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.RebalancingAlertRecord;
@@ -11,38 +12,30 @@ import java.util.List;
 @Service
 public class RebalancingAlertServiceImpl implements RebalancingAlertService {
 
-    private final RebalancingAlertRecordRepository repo;
+    private final RebalancingAlertRecordRepository repository;
 
-    public RebalancingAlertServiceImpl(RebalancingAlertRecordRepository repo) {
-        this.repo = repo;
+    public RebalancingAlertServiceImpl(RebalancingAlertRecordRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public RebalancingAlertRecord createAlert(RebalancingAlertRecord alert) {
-        return repo.save(alert);
+    public RebalancingAlertRecord createAlert(RebalancingAlertRecord record) {
+        if (record.getCurrentPercentage() <= record.getTargetPercentage()) {
+            throw new IllegalArgumentException("currentPercentage > targetPercentage required");
+        }
+        return repository.save(record);
     }
 
     @Override
     public RebalancingAlertRecord resolveAlert(Long id) {
-        RebalancingAlertRecord alert = getAlertById(id);
+        RebalancingAlertRecord alert = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Alert not found: " + id));
         alert.setResolved(true);
-        return repo.save(alert);
+        return repository.save(alert);
     }
 
     @Override
     public List<RebalancingAlertRecord> getAlertsByInvestor(Long investorId) {
-        return repo.findByInvestorId(investorId);
-    }
-
-    @Override
-    public List<RebalancingAlertRecord> getAllAlerts() {
-        return repo.findAll();
-    }
-
-    // Fixes the missing getAlertById error
-    @Override
-    public RebalancingAlertRecord getAlertById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Alert not found with id: " + id));
+        return repository.findByInvestorId(investorId);
     }
 }

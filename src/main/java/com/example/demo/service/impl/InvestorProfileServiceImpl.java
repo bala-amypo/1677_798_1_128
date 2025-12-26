@@ -1,3 +1,4 @@
+// src/main/java/com/example/demo/service/impl/InvestorProfileServiceImpl.java
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.InvestorProfile;
@@ -12,37 +13,37 @@ import java.util.Optional;
 @Service
 public class InvestorProfileServiceImpl implements InvestorProfileService {
 
-    private final InvestorProfileRepository repo;
+    private final InvestorProfileRepository repository;
 
-    public InvestorProfileServiceImpl(InvestorProfileRepository repo) {
-        this.repo = repo;
+    public InvestorProfileServiceImpl(InvestorProfileRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public InvestorProfile createInvestor(InvestorProfile investor) {
-        return repo.save(investor);
+    public InvestorProfile createInvestor(InvestorProfile profile) {
+        return repository.save(profile);
     }
 
     @Override
     public InvestorProfile getInvestorById(Long id) {
-        return repo.findById(id)
+        return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Investor not found: " + id));
     }
 
     @Override
     public List<InvestorProfile> getAllInvestors() {
-        return repo.findAll();
-    }
-
-    @Override
-    public Optional<InvestorProfile> findByInvestorId(String investorId) {
-        return repo.findByInvestorId(investorId);
+        return repository.findAll();
     }
 
     @Override
     public InvestorProfile updateInvestorStatus(Long id, boolean active) {
-        InvestorProfile investor = getInvestorById(id);
-        investor.setActive(active);
-        return repo.save(investor);
+        InvestorProfile profile = getInvestorById(id);
+        profile.setActive(active);
+        return repository.save(profile);
+    }
+
+    @Override
+    public Optional<InvestorProfile> findByInvestorId(String investorId) {
+        return repository.findByInvestorId(investorId);
     }
 }

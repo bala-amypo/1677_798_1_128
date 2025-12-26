@@ -1,3 +1,4 @@
+// src/main/java/com/example/demo/service/impl/AllocationRuleServiceImpl.java
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.AssetClassAllocationRule;
@@ -11,39 +12,38 @@ import java.util.List;
 @Service
 public class AllocationRuleServiceImpl implements AllocationRuleService {
 
-    private final AssetClassAllocationRuleRepository repo;
+    private final AssetClassAllocationRuleRepository repository;
 
-    public AllocationRuleServiceImpl(AssetClassAllocationRuleRepository repo) {
-        this.repo = repo;
+    public AllocationRuleServiceImpl(AssetClassAllocationRuleRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public AssetClassAllocationRule createRule(AssetClassAllocationRule rule) {
-        return repo.save(rule);
+        validatePercentage(rule.getTargetPercentage());
+        return repository.save(rule);
     }
 
     @Override
-    public AssetClassAllocationRule updateRule(Long id, AssetClassAllocationRule ruleData) {
-        AssetClassAllocationRule existing = getRuleById(id);
-        existing.setTargetPercentage(ruleData.getTargetPercentage());
-        existing.setActive(ruleData.getActive());
-        return repo.save(existing);
+    public AssetClassAllocationRule updateRule(Long id, AssetClassAllocationRule rule) {
+        AssetClassAllocationRule existing = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Rule not found: " + id));
+        validatePercentage(rule.getTargetPercentage());
+        existing.setAssetClass(rule.getAssetClass());
+        existing.setTargetPercentage(rule.getTargetPercentage());
+        existing.setActive(rule.getActive());
+        existing.setInvestorId(rule.getInvestorId());
+        return repository.save(existing);
     }
 
     @Override
     public List<AssetClassAllocationRule> getRulesByInvestor(Long investorId) {
-        return repo.findByInvestorId(investorId);
+        return repository.findByInvestorId(investorId);
     }
 
-    @Override
-    public AssetClassAllocationRule getRuleById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Rule not found"));
-    }
-
-    // Fixes the missing method error
-    @Override
-    public List<AssetClassAllocationRule> getActiveRules(Long investorId) {
-        return repo.findByInvestorIdAndActiveTrue(investorId);
+    private void validatePercentage(Double value) {
+        if (value == null || value < 0 || value > 100) {
+            throw new IllegalArgumentException("Target percentage must be between 0 and 100");
+        }
     }
 }
