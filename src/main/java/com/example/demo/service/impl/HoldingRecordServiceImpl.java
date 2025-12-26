@@ -41,6 +41,6 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
 
     @Override
     public List<HoldingRecord> getHoldingsGreaterThan(double value) {
-        return holdingRecordRepository.findByCurrentValueGreaterThan(value);
+        return holdingRecordRepository.findByValueGreaterThan(value);
     }
 }

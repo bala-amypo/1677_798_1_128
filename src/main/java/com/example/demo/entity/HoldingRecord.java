@@ -18,18 +18,26 @@ public class HoldingRecord {
 
     private double currentValue;
 
-    private LocalDateTime dateTime;
+    private LocalDateTime timestamp;
 
-    // Default constructor
+    // Default constructor required by JPA
     public HoldingRecord() {}
 
-    // Constructor with all fields
-    public HoldingRecord(Long id, Long investorId, AssetClassType assetClass, double currentValue, LocalDateTime dateTime) {
+    // Constructor matching your test (without id)
+    public HoldingRecord(long investorId, AssetClassType assetClass, double currentValue, LocalDateTime timestamp) {
+        this.investorId = investorId;
+        this.assetClass = assetClass;
+        this.currentValue = currentValue;
+        this.timestamp = timestamp;
+    }
+
+    // Full constructor (with id)
+    public HoldingRecord(Long id, Long investorId, AssetClassType assetClass, double currentValue, LocalDateTime timestamp) {
         this.id = id;
         this.investorId = investorId;
         this.assetClass = assetClass;
         this.currentValue = currentValue;
-        this.dateTime = dateTime;
+        this.timestamp = timestamp;
     }
 
     // Getters and setters
@@ -45,6 +53,6 @@ public class HoldingRecord {
     public double getCurrentValue() { return currentValue; }
     public void setCurrentValue(double currentValue) { this.currentValue = currentValue; }
 
-    public LocalDateTime getDateTime() { return dateTime; }
-    public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
 }
