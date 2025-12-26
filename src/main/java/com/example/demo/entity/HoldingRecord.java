@@ -1,74 +1,50 @@
 package com.example.demo.entity;
 
 import com.example.demo.entity.enums.AssetClassType;
-
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "holding_records")
 public class HoldingRecord {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long investorId;
+
     @Enumerated(EnumType.STRING)
     private AssetClassType assetClass;
 
     private double currentValue;
 
-    private LocalDateTime timestamp;
+    private LocalDateTime dateTime;
 
     // Default constructor
     public HoldingRecord() {}
 
-    // Existing constructor
-    public HoldingRecord(Long id, AssetClassType assetClass, double currentValue) {
+    // Constructor with all fields
+    public HoldingRecord(Long id, Long investorId, AssetClassType assetClass, double currentValue, LocalDateTime dateTime) {
         this.id = id;
+        this.investorId = investorId;
         this.assetClass = assetClass;
         this.currentValue = currentValue;
-        this.timestamp = LocalDateTime.now();
+        this.dateTime = dateTime;
     }
 
-    // New constructor to satisfy tests
-    public HoldingRecord(Long id, AssetClassType assetClass, double currentValue, LocalDateTime timestamp) {
-        this.id = id;
-        this.assetClass = assetClass;
-        this.currentValue = currentValue;
-        this.timestamp = timestamp;
-    }
+    // Getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    // Getters & setters
-    public Long getId() {
-        return id;
-    }
+    public Long getInvestorId() { return investorId; }
+    public void setInvestorId(Long investorId) { this.investorId = investorId; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public AssetClassType getAssetClass() { return assetClass; }
+    public void setAssetClass(AssetClassType assetClass) { this.assetClass = assetClass; }
 
-    public AssetClassType getAssetClass() {
-        return assetClass;
-    }
+    public double getCurrentValue() { return currentValue; }
+    public void setCurrentValue(double currentValue) { this.currentValue = currentValue; }
 
-    public void setAssetClass(AssetClassType assetClass) {
-        this.assetClass = assetClass;
-    }
-
-    public double getCurrentValue() {
-        return currentValue;
-    }
-
-    public void setCurrentValue(double currentValue) {
-        this.currentValue = currentValue;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
+    public LocalDateTime getDateTime() { return dateTime; }
+    public void setDateTime(LocalDateTime dateTime) { this.dateTime = dateTime; }
 }
