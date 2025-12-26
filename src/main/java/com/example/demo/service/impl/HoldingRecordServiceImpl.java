@@ -35,7 +35,7 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
     }
 
     @Override
-    public HoldingRecord createHolding(HoldingRecord holding) {
+    public HoldingRecord recordHolding(HoldingRecord holding) {
         return holdingRecordRepository.save(holding);
     }
 
