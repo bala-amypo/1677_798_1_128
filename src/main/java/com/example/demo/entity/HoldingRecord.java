@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/entity/HoldingRecord.java
 package com.example.demo.entity;
 
 import com.example.demo.entity.enums.AssetClassType;
@@ -7,6 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "holding_records")
 public class HoldingRecord {
 
     @Id
@@ -24,56 +24,34 @@ public class HoldingRecord {
     private Double currentValue;
 
     @Column(nullable = false)
-    private LocalDateTime valuationTime;
+    private LocalDateTime recordedAt;
 
-    public HoldingRecord() {
-    }
+    public HoldingRecord() {}
 
-    public HoldingRecord(Long investorId, AssetClassType assetClass,
-                         Double currentValue, LocalDateTime valuationTime) {
+    public HoldingRecord(
+            Long investorId,
+            AssetClassType assetClass,
+            Double currentValue,
+            LocalDateTime recordedAt
+    ) {
         this.investorId = investorId;
         this.assetClass = assetClass;
         this.currentValue = currentValue;
-        this.valuationTime = valuationTime;
+        this.recordedAt = recordedAt;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public Long getInvestorId() { return investorId; }
+    public void setInvestorId(Long investorId) { this.investorId = investorId; }
 
-    public Long getInvestorId() {
-        return investorId;
-    }
+    public AssetClassType getAssetClass() { return assetClass; }
+    public void setAssetClass(AssetClassType assetClass) { this.assetClass = assetClass; }
 
-    public void setInvestorId(Long investorId) {
-        this.investorId = investorId;
-    }
+    public Double getCurrentValue() { return currentValue; }
+    public void setCurrentValue(Double currentValue) { this.currentValue = currentValue; }
 
-    public AssetClassType getAssetClass() {
-        return assetClass;
-    }
-
-    public void setAssetClass(AssetClassType assetClass) {
-        this.assetClass = assetClass;
-    }
-
-    public Double getCurrentValue() {
-        return currentValue;
-    }
-
-    public void setCurrentValue(Double currentValue) {
-        this.currentValue = currentValue;
-    }
-
-    public LocalDateTime getValuationTime() {
-        return valuationTime;
-    }
-
-    public void setValuationTime(LocalDateTime valuationTime) {
-        this.valuationTime = valuationTime;
-    }
+    public LocalDateTime getRecordedAt() { return recordedAt; }
+    public void setRecordedAt(LocalDateTime recordedAt) { this.recordedAt = recordedAt; }
 }
