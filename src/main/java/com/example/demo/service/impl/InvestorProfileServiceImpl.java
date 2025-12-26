@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Service // MUST HAVE THIS
 public class InvestorProfileServiceImpl {
     private final InvestorProfileRepository repository;
     public InvestorProfileServiceImpl(InvestorProfileRepository repository) { this.repository = repository; }
     public InvestorProfile createInvestor(InvestorProfile inv) { return repository.save(inv); }
     public InvestorProfile getInvestorById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found: " + id));
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Investor " + id));
     }
     public List<InvestorProfile> getAllInvestors() { return repository.findAll(); }
     public InvestorProfile updateInvestorStatus(Long id, Boolean status) {
