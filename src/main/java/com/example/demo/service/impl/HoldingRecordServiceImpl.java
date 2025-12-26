@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/service/impl/HoldingRecordServiceImpl.java
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.HoldingRecord;
@@ -7,38 +6,26 @@ import com.example.demo.service.HoldingRecordService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class HoldingRecordServiceImpl implements HoldingRecordService {
+public class HoldingRecordServiceImpl
+        implements HoldingRecordService {
 
     private final HoldingRecordRepository repository;
 
-    public HoldingRecordServiceImpl(HoldingRecordRepository repository) {
+    public HoldingRecordServiceImpl(
+            HoldingRecordRepository repository
+    ) {
         this.repository = repository;
     }
 
     @Override
-    public HoldingRecord recordHolding(HoldingRecord record) {
-        if (record.getCurrentValue() == null || record.getCurrentValue() <= 0) {
-            throw new IllegalArgumentException("Holding value must be > 0");
-        }
+    public HoldingRecord save(HoldingRecord record) {
         return repository.save(record);
     }
 
     @Override
-    public List<HoldingRecord> getHoldingsByInvestor(Long investorId) {
+    public List<HoldingRecord> findByInvestor(Long investorId) {
         return repository.findByInvestorId(investorId);
-    }
-
-    @Override
-    public Optional<HoldingRecord> getHoldingById(Long id) {
-        return repository.findById(id);
-    }
-
-    // NEW
-    @Override
-    public List<HoldingRecord> getAllHoldings() {
-        return repository.findAll();
     }
 }

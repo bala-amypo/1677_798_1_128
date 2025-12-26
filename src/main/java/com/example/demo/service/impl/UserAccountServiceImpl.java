@@ -4,37 +4,31 @@ import com.example.demo.entity.UserAccount;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserAccountRepository;
 import com.example.demo.service.UserAccountService;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class UserAccountServiceImpl implements UserAccountService {
+public class UserAccountServiceImpl
+        implements UserAccountService {
 
-    private final UserAccountRepository repo;
-    private final PasswordEncoder passwordEncoder;
+    private final UserAccountRepository repository;
 
-    public UserAccountServiceImpl(UserAccountRepository repo, PasswordEncoder passwordEncoder) {
-        this.repo = repo;
-        this.passwordEncoder = passwordEncoder;
+    public UserAccountServiceImpl(
+            UserAccountRepository repository
+    ) {
+        this.repository = repository;
     }
 
     @Override
-    public UserAccount createUser(UserAccount user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return repo.save(user);
+    public UserAccount register(UserAccount user) {
+        return repository.save(user);
     }
 
     @Override
-    public List<UserAccount> getAllUsers() {
-        return repo.findAll();
-    }
-
-    // Fixes the missing getUserById error
-    @Override
-    public UserAccount getUserById(Long id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+    public UserAccount findByUsername(String username) {
+        return repository.findByUsername(username)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "User not found: " + username
+                        ));
     }
 }

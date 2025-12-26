@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/service/AllocationRuleService.java
 package com.example.demo.service;
 
 import com.example.demo.entity.AssetClassAllocationRule;
@@ -6,7 +5,8 @@ import com.example.demo.entity.AssetClassAllocationRule;
 import java.util.List;
 
 public interface AllocationRuleService {
-    AssetClassAllocationRule createRule(AssetClassAllocationRule rule);
-    AssetClassAllocationRule updateRule(Long id, AssetClassAllocationRule rule);
-    List<AssetClassAllocationRule> getRulesByInvestor(Long investorId);
+
+    AssetClassAllocationRule save(AssetClassAllocationRule rule);
+
+    List<AssetClassAllocationRule> findActiveRules(Long investorId);
 }

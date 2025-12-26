@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/service/impl/InvestorProfileServiceImpl.java
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.InvestorProfile;
@@ -7,43 +6,29 @@ import com.example.demo.repository.InvestorProfileRepository;
 import com.example.demo.service.InvestorProfileService;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
-public class InvestorProfileServiceImpl implements InvestorProfileService {
+public class InvestorProfileServiceImpl
+        implements InvestorProfileService {
 
     private final InvestorProfileRepository repository;
 
-    public InvestorProfileServiceImpl(InvestorProfileRepository repository) {
+    public InvestorProfileServiceImpl(
+            InvestorProfileRepository repository
+    ) {
         this.repository = repository;
     }
 
     @Override
-    public InvestorProfile createInvestor(InvestorProfile profile) {
+    public InvestorProfile createProfile(InvestorProfile profile) {
         return repository.save(profile);
     }
 
     @Override
-    public InvestorProfile getInvestorById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Investor not found: " + id));
-    }
-
-    @Override
-    public List<InvestorProfile> getAllInvestors() {
-        return repository.findAll();
-    }
-
-    @Override
-    public InvestorProfile updateInvestorStatus(Long id, boolean active) {
-        InvestorProfile profile = getInvestorById(id);
-        profile.setActive(active);
-        return repository.save(profile);
-    }
-
-    @Override
-    public Optional<InvestorProfile> findByInvestorId(String investorId) {
-        return repository.findByInvestorId(investorId);
+    public InvestorProfile getByInvestorId(String investorId) {
+        return repository.findByInvestorId(investorId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException(
+                                "Investor not found: " + investorId
+                        ));
     }
 }
