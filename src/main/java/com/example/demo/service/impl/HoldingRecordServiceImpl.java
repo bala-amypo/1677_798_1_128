@@ -1,12 +1,12 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.HoldingRecord;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.HoldingRecordRepository;
 import com.example.demo.service.HoldingRecordService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HoldingRecordServiceImpl
@@ -31,11 +31,7 @@ public class HoldingRecordServiceImpl
     }
 
     @Override
-    public HoldingRecord getHoldingById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Holding not found: " + id
-                        ));
+    public Optional<HoldingRecord> getHoldingById(Long id) {
+        return repository.findById(id);
     }
 }
