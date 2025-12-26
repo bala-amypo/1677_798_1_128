@@ -29,7 +29,6 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
         return holdingRecordRepository.findByInvestorId(investorId);
     }
 
-    // MATCHES INTERFACE METHOD NAME
     @Override
     public List<HoldingRecord> getByInvestorAndAssetClass(Long investorId, AssetClassType assetClass) {
         return holdingRecordRepository.findByInvestorIdAndAssetClass(investorId, assetClass);
@@ -40,7 +39,7 @@ public class HoldingRecordServiceImpl implements HoldingRecordService {
         return holdingRecordRepository.save(holding);
     }
 
-    @Override
+    // Removed @Override since this is not in the interface
     public List<HoldingRecord> getHoldingsGreaterThan(double value) {
         return holdingRecordRepository.findByCurrentValueGreaterThan(value);
     }
