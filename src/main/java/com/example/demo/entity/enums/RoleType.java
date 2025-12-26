@@ -1,4 +1,3 @@
-// src/main/java/com/example/demo/entity/enums/RoleType.java
 package com.example.demo.entity.enums;
 
 public enum RoleType {

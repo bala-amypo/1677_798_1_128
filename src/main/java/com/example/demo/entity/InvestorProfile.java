@@ -1,29 +1,34 @@
-// src/main/java/com/example/demo/entity/InvestorProfile.java
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
 
 @Entity
+@Table(
+    name = "investor_profiles",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "email"),
+        @UniqueConstraint(columnNames = "investorId")
+    }
+)
 public class InvestorProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String investorId;
 
     @Column(nullable = false)
     private String fullName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
-    private Boolean active;
+    private Boolean active = true;
 
-    public InvestorProfile() {
-    }
+    public InvestorProfile() {}
 
     public InvestorProfile(String investorId, String fullName, String email, Boolean active) {
         this.investorId = investorId;
@@ -32,43 +37,18 @@ public class InvestorProfile {
         this.active = active;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getInvestorId() { return investorId; }
+    public void setInvestorId(String investorId) { this.investorId = investorId; }
 
-    public String getInvestorId() {
-        return investorId;
-    }
+    public String getFullName() { return fullName; }
+    public void setFullName(String fullName) { this.fullName = fullName; }
 
-    public void setInvestorId(String investorId) {
-        this.investorId = investorId;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
+    public Boolean getActive() { return active; }
+    public void setActive(Boolean active) { this.active = active; }
 }
