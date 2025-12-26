@@ -39,11 +39,12 @@ public class AllocationSnapshotServiceImpl implements AllocationSnapshotService 
         return snapRepo.findAll();
     }
 
-    @Override
-    public AllocationSnapshotRecord getSnapshotById(Long id) {
-        return snapRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Not found: " + id));
-    }
+   @Override
+public AllocationSnapshotRecord getSnapshotById(Long id) {
+    return snapRepo.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Snapshot not found with id: " + id));
+}
+
 
     @Override
     public AllocationSnapshotRecord computeSnapshot(Long investorId) {
