@@ -4,7 +4,8 @@ import com.example.demo.entity.AssetClassAllocationRule;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.AssetClassAllocationRuleRepository;
 import java.util.List;
-
+import org.springframework.stereotype.Service;
+@Service
 public class AllocationRuleServiceImpl {
     private final AssetClassAllocationRuleRepository repository;
 

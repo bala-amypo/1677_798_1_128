@@ -5,7 +5,8 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.*;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import org.springframework.stereotype.Service;
+@Service
 public class AllocationSnapshotServiceImpl {
     private final AllocationSnapshotRecordRepository snapshotRepo;
     private final HoldingRecordRepository holdingRepo;
